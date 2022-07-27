@@ -26,3 +26,6 @@ def syst_lock_on():
 
 def output_on():
     return send('OUTP ON', 0)
+
+def output_off():
+    return send('OUTP OFF', 0)
