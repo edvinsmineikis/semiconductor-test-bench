@@ -6,3 +6,10 @@ Install python dependencies by running:
 ```
 py -m pip install -r ./system/requirements.txt
 ```
+
+Run webapp by doing:
+```
+cd webapp
+yarn install
+yarn run dev
+```
