@@ -1,2 +1,5 @@
-pyvisa
 pyserial
+pyvisa
+pyvisa-py
+psutil
+zeroconf
