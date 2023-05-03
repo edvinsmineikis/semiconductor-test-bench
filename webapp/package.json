@@ -10,6 +10,7 @@
     "@mdi/font": "7.0.96",
     "roboto-fontface": "*",
     "vue": "^3.2.0",
+    "vue-google-charts": "^1.1.0",
     "vuetify": "^3.0.0",
     "webfontloader": "^1.0.0"
   },

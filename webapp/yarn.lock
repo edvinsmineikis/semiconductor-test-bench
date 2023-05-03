@@ -1532,6 +1532,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"vue-google-charts@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "vue-google-charts@npm:1.1.0"
+  peerDependencies:
+    vue: ^3.0.0-0 || ^2.6.0
+  checksum: bdb2b4437bb32635eeb135c7a21761684f790f77b5a41ee6cddd17de854f03cf9739b8cac0d55d6ee633ec024eb02a04988e33739eac09f5eb1f29112b152574
+  languageName: node
+  linkType: hard
+
 "vue@npm:^3.2.0":
   version: 3.2.47
   resolution: "vue@npm:3.2.47"
@@ -1574,6 +1583,7 @@ __metadata:
     vite: ^4.2.0
     vite-plugin-vuetify: ^1.0.0
     vue: ^3.2.0
+    vue-google-charts: ^1.1.0
     vuetify: ^3.0.0
     webfontloader: ^1.0.0
   languageName: unknown

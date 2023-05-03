@@ -34,6 +34,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["vite", "virtual:2ba7b7bf1e154764f9cb0681eb8bbcdae6bd0bbe9ec38e8eb6228eeb0441f4e79b8c4f80c93eaac09aa4c36cbd708eeb660042e7144fcf9761cbc5e5b7e888d8#npm:4.3.4"],\
             ["vite-plugin-vuetify", "virtual:2ba7b7bf1e154764f9cb0681eb8bbcdae6bd0bbe9ec38e8eb6228eeb0441f4e79b8c4f80c93eaac09aa4c36cbd708eeb660042e7144fcf9761cbc5e5b7e888d8#npm:1.0.2"],\
             ["vue", "npm:3.2.47"],\
+            ["vue-google-charts", "virtual:2ba7b7bf1e154764f9cb0681eb8bbcdae6bd0bbe9ec38e8eb6228eeb0441f4e79b8c4f80c93eaac09aa4c36cbd708eeb660042e7144fcf9761cbc5e5b7e888d8#npm:1.1.0"],\
             ["vuetify", "virtual:2ba7b7bf1e154764f9cb0681eb8bbcdae6bd0bbe9ec38e8eb6228eeb0441f4e79b8c4f80c93eaac09aa4c36cbd708eeb660042e7144fcf9761cbc5e5b7e888d8#npm:3.2.2"],\
             ["webfontloader", "npm:1.6.28"]\
           ],\
@@ -1811,6 +1812,28 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["vue-google-charts", [\
+        ["npm:1.1.0", {\
+          "packageLocation": "./.yarn/cache/vue-google-charts-npm-1.1.0-a8d8509807-bdb2b4437b.zip/node_modules/vue-google-charts/",\
+          "packageDependencies": [\
+            ["vue-google-charts", "npm:1.1.0"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:2ba7b7bf1e154764f9cb0681eb8bbcdae6bd0bbe9ec38e8eb6228eeb0441f4e79b8c4f80c93eaac09aa4c36cbd708eeb660042e7144fcf9761cbc5e5b7e888d8#npm:1.1.0", {\
+          "packageLocation": "./.yarn/__virtual__/vue-google-charts-virtual-b2e7e861eb/0/cache/vue-google-charts-npm-1.1.0-a8d8509807-bdb2b4437b.zip/node_modules/vue-google-charts/",\
+          "packageDependencies": [\
+            ["vue-google-charts", "virtual:2ba7b7bf1e154764f9cb0681eb8bbcdae6bd0bbe9ec38e8eb6228eeb0441f4e79b8c4f80c93eaac09aa4c36cbd708eeb660042e7144fcf9761cbc5e5b7e888d8#npm:1.1.0"],\
+            ["@types/vue", null],\
+            ["vue", "npm:3.2.47"]\
+          ],\
+          "packagePeers": [\
+            "@types/vue",\
+            "vue"\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["vuetify", [\
         ["npm:3.2.2", {\
           "packageLocation": "./.yarn/cache/vuetify-npm-3.2.2-7db84bbf94-c6d919e4d8.zip/node_modules/vuetify/",\
@@ -1856,6 +1879,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["vite", "virtual:2ba7b7bf1e154764f9cb0681eb8bbcdae6bd0bbe9ec38e8eb6228eeb0441f4e79b8c4f80c93eaac09aa4c36cbd708eeb660042e7144fcf9761cbc5e5b7e888d8#npm:4.3.4"],\
             ["vite-plugin-vuetify", "virtual:2ba7b7bf1e154764f9cb0681eb8bbcdae6bd0bbe9ec38e8eb6228eeb0441f4e79b8c4f80c93eaac09aa4c36cbd708eeb660042e7144fcf9761cbc5e5b7e888d8#npm:1.0.2"],\
             ["vue", "npm:3.2.47"],\
+            ["vue-google-charts", "virtual:2ba7b7bf1e154764f9cb0681eb8bbcdae6bd0bbe9ec38e8eb6228eeb0441f4e79b8c4f80c93eaac09aa4c36cbd708eeb660042e7144fcf9761cbc5e5b7e888d8#npm:1.1.0"],\
             ["vuetify", "virtual:2ba7b7bf1e154764f9cb0681eb8bbcdae6bd0bbe9ec38e8eb6228eeb0441f4e79b8c4f80c93eaac09aa4c36cbd708eeb660042e7144fcf9761cbc5e5b7e888d8#npm:3.2.2"],\
             ["webfontloader", "npm:1.6.28"]\
           ],\
