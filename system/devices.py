@@ -1,6 +1,7 @@
 import serial
 import serial.tools.list_ports
 import time
+import atexit
 import pyvisa
 import numpy as np
 # import RPi.GPIO as GPIO
@@ -9,55 +10,62 @@ import mock_gpio as GPIO
 
 # TEKTRONIX TDS7104 Digital Phosphor Oscilloscope
 class Oscilloscope():
-    def __init__(self):
-        visa = pyvisa.ResourceManager()
-        self.resource = visa.open_resource(visa.list_resources()[0])
-        self.set_channel(1)
-        self.resource.write('DATA:ENCDG ASCII')
-        self.resource.write('DATA:WIDTH 1')
+    def __init__(self, resource_name=None, stop_discovery=False):
+        if not stop_discovery:
+            visa = pyvisa.ResourceManager()
+            try:
+                self.rm = visa.open_resource(resource_name)
+            except Exception as err:
+                err_msg = str(err)
+                err_msg += "\n\n"
+                err_msg += "No VISA device found with name: " + str(resource_name)
+                raise Exception(err_msg)
+            self.set_channel(1)
+            self.rm.write('DATA:ENCDG ASCII')
+            self.rm.write('DATA:WIDTH 1')
 
     def get_curve(self):
-        yzero = float(self.resource.query('WFMO:YZE?'))
-        ymult = float(self.resource.query('WFMO:YMU?'))
-        yoff = float(self.resource.query('WFMO:YOF?'))
-        values = np.array(self.resource.query_ascii_values('CURV?'))
+        yzero = float(self.rm.query('WFMO:YZE?'))
+        ymult = float(self.rm.query('WFMO:YMU?'))
+        yoff = float(self.rm.query('WFMO:YOF?'))
+        values = np.array(self.rm.query_ascii_values('CURV?'))
         for a in range(len(values)):
             values[a] = yzero - yoff * ymult + ymult * float(values[a])
         return values
 
     # Sets horizontal scale, input must be scientifically noted string, f.e.: '20e-9', which is 20ns/division.
     def set_horizontal_scale(self, scale):
-        self.resource.write('HORIZONTAL:SAMPLERATE ' + scale)
+        self.rm.write('HORIZONTAL:SAMPLERATE ' + scale)
 
     def set_channel(self, channel):
-        self.resource.write('DATA:SOURCE CH' + str(channel))
+        self.rm.write('DATA:SOURCE CH' + str(channel))
 
     # Returns AUTO or NORMAL.
     def get_trigger_mode(self):
-        return self.resource.query('TRIGGER:A:MODE?')
+        return self.rm.query('TRIGGER:A:MODE?')
 
     def set_trigger_normal_mode(self):
-        self.resource.write('TRIGGER:A:MODE NORMAL')
+        self.rm.write('TRIGGER:A:MODE NORMAL')
 
     def set_trigger_auto_mode(self):
-        self.resource.write('TRIGGER:A:MODE AUTO')
+        self.rm.write('TRIGGER:A:MODE AUTO')
 
     def set_trigger_channel_for_edge(self, channel):
-        self.resource.write('TRIGGER:A:EDGE:SOURCE CH' + str(channel))
+        self.rm.write('TRIGGER:A:EDGE:SOURCE CH' + str(channel))
 
     # Level is a float in volts.
     def set_trigger_channel_level(self, channel, level):
-        self.resource.write('TRIGGER:A:LEVEL CH' +
+        self.rm.write('TRIGGER:A:LEVEL CH' +
                             str(channel) + ' ' + str(level))
 
     def set_trigger_slope_either(self):
-        self.resource.write('TRIGGER:A:EDGE:SLOPE EITHER')
+        self.rm.write('TRIGGER:A:EDGE:SLOPE EITHER')
 
     def set_trigger_slope_rise(self):
-        self.resource.write('TRIGGER:A:EDGE:SLOPE RISE')
+        self.rm.write('TRIGGER:A:EDGE:SLOPE RISE')
 
     def set_trigger_slope_fall(self):
-        self.resource.write('TRIGGER:A:EDGE:SLOPE FALL')
+        self.rm.write('TRIGGER:A:EDGE:SLOPE FALL')
 
     # ARMED indicates that the instrument is acquiring pretrigger information.
     # AUTO indicates that the instrument is in the automatic mode and acquires data even in the absence of a trigger.
@@ -65,18 +73,24 @@ class Oscilloscope():
     # SAVE indicates that the instrument is in save mode and is not acquiring data.
     # TRIGGER indicates that the instrument triggered and is acquiring the post trigger information.
     def get_trigger_status(self):
-        return self.resource.query('TRIGGER:STATE?')
+        return self.rm.query('TRIGGER:STATE?')
 
 
 # Elektro-Automatik PSI9500
 class PowerSupply():
-    def __init__(self, vid, pid):
-        ports = serial.tools.list_ports.comports()
-        for port in ports:
-            if port.vid == vid and port.pid == pid:
-                self.serial = serial.Serial(port=port.name, write_timeout=5)
-        time.sleep(0.1)
-        self.send('SYST:LOCK ON', wait=False)
+    def __init__(self, vid=None, pid=None, stop_discovery=False):
+        if not stop_discovery:
+            ports = serial.tools.list_ports.comports()
+            for port in ports:
+                if port.vid == vid and port.pid == pid:
+                    self.serial = serial.Serial(port=port.name, write_timeout=5)
+                    time.sleep(0.1)
+                    self.send('SYST:LOCK ON', wait=False)
+            else:
+                err_msg = "PowerSupply not found:\n"
+                err_msg += "VID: " + str(vid) + "\n"
+                err_msg += "PID: " + str(pid) + "\n"
+                raise Exception(err_msg)
 
     def send(self, cmd, wait = True):
         if self.serial.isOpen() == False:
@@ -96,12 +110,19 @@ class PowerSupply():
 
 # Aim CPX400SP DC Power Supply 60V/20A
 class PowerSupplySmall():
-    def __init__(self, vid, pid):
-        ports = serial.tools.list_ports.comports()
-        for port in ports:
-            if port.vid == vid and port.pid == pid:
-                self.serial = serial.Serial(port=port.name, write_timeout=5)
-        time.sleep(0.1)
+    def __init__(self, vid=None, pid=None, stop_discovery=False):
+        if not stop_discovery:
+            ports = serial.tools.list_ports.comports()
+            for port in ports:
+                if port.vid == vid and port.pid == pid:
+                    self.serial = serial.Serial(port=port.name, write_timeout=5)
+                    time.sleep(0.1)
+            else:
+                err_msg = "PowerSupplySmall not found:\n"
+                err_msg += "VID: " + str(vid) + "\n"
+                err_msg += "PID: " + str(pid) + "\n"
+                raise Exception(err_msg)
+            
 
     def send(self, cmd, wait=True):
         if self.serial.isOpen() == False:
@@ -147,6 +168,7 @@ class PowerSupplySmall():
 # Control board with Raspberry Pi
 class ControlBoard():
     def __init__(self):
+        atexit.register(GPIO.cleanup)
         GPIO.setmode(GPIO.BCM)
         self.pins_in = {
             "HiVDS_ready": 27,
@@ -157,10 +179,10 @@ class ControlBoard():
             "HiVG_start": 23
         }
 
-        for value in self.pins_in.values():
-            GPIO.setup(value, GPIO.IN)
-        for value in self.pins_out.values():
-            GPIO.setup(value, GPIO.OUT)
+        for pin in self.pins_in.values():
+            GPIO.setup(pin, GPIO.IN)
+        for pin in self.pins_out.values():
+            GPIO.setup(pin, GPIO.OUT)
 
     def set_HiVDS_on(self):
         GPIO.output(self.pins_out["HiVDS_start"], GPIO.HIGH)
@@ -179,5 +201,6 @@ class ControlBoard():
 
     def get_HiVG_is_enabled(self):
         return GPIO.input(self.pins_in["HiVG_ready"])
+
     
-    
+

@@ -17,3 +17,7 @@ def input(pin):
 @staticmethod
 def setmode(mode):
     pass
+
+@staticmethod
+def cleanup():
+    pass
