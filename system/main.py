@@ -1,8 +1,11 @@
 from devices import *
 
-osc = Oscilloscope()
 ps = PowerSupply()
+osc = Oscilloscope()
 ps_small = PowerSupplySmall()
+board = ControlBoard()
+
+
 
 
 
