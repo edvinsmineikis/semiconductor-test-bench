@@ -1,5 +1,6 @@
 <template>
-    <v-app-bar title="Semiconductor Test Bench" color="blue-darken-1"></v-app-bar>
+    <v-app-bar title="Semiconductor Test Bench" color="blue-darken-1">
+    </v-app-bar>
 
     <v-navigation-drawer color="grey-lighten-2">
         <v-list>
@@ -37,6 +38,11 @@ export default {
         ControlMenu,
         Parameters,
         Chart
+    },
+    data() {
+        return {
+            drawer: true
+        }
     }
 }
 </script>

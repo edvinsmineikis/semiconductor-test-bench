@@ -202,5 +202,5 @@ class ControlBoard():
     def get_HiVG_is_enabled(self):
         return GPIO.input(self.pins_in["HiVG_ready"])
 
-    
+
 

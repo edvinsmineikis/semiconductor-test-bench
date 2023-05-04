@@ -1,5 +1,5 @@
 <template>
-    <v-card>
+    <v-card title="Parameters">
         <v-container>
             <v-row>
                 <v-col align="center">
