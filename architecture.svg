@@ -1,0 +1,92 @@
+<?xml version="1.0" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="756pt" height="296pt" viewBox="0.00 0.00 756.44 295.6">
+<g id="graph0" class="graph" transform="translate(4,291.6000061035156) scale(1)" data-name="G">
+
+<polygon fill="white" stroke="none" points="-4,4 -4,-291.6 752.44,-291.6 752.44,4 -4,4"/>
+<!-- devices.py -->
+<g id="node1" class="node" pointer-events="visible" data-name="devices.py">
+
+<ellipse fill="none" stroke="black" cx="365.11" cy="-91" rx="52.13" ry="18"/>
+<text text-anchor="middle" x="365.11" y="-86.8" font-family="Times,serif" font-size="14.00">devices.py</text>
+</g>
+<!-- class Oscilloscope -->
+<g id="node2" class="node" pointer-events="visible" data-name="class Oscilloscope">
+
+<ellipse fill="none" stroke="black" cx="82.11" cy="-18" rx="82.21" ry="18"/>
+<text text-anchor="middle" x="82.11" y="-13.8" font-family="Times,serif" font-size="14.00">class Oscilloscope</text>
+</g>
+<!-- devices.py&#45;&#45;class Oscilloscope -->
+<g id="edge1" class="edge" data-name="devices.py--class Oscilloscope">
+
+<path fill="none" stroke="black" d="M323.95,-79.68C273.98,-67.14 189.6,-45.97 134.88,-32.24"/>
+</g>
+<!-- class PowerSupply -->
+<g id="node3" class="node" pointer-events="visible" data-name="class PowerSupply">
+
+<ellipse fill="none" stroke="black" cx="266.11" cy="-18" rx="84.03" ry="18"/>
+<text text-anchor="middle" x="266.11" y="-13.8" font-family="Times,serif" font-size="14.00">class PowerSupply</text>
+</g>
+<!-- devices.py&#45;&#45;class PowerSupply -->
+<g id="edge2" class="edge" data-name="devices.py--class PowerSupply">
+
+<path fill="none" stroke="black" d="M343.13,-74.24C327.18,-62.8 305.64,-47.35 289.39,-35.7"/>
+</g>
+<!-- class MicroController -->
+<g id="node4" class="node" pointer-events="visible" data-name="class MicroController">
+
+<ellipse fill="none" stroke="black" cx="464.11" cy="-18" rx="95.53" ry="18"/>
+<text text-anchor="middle" x="464.11" y="-13.8" font-family="Times,serif" font-size="14.00">class MicroController</text>
+</g>
+<!-- devices.py&#45;&#45;class MicroController -->
+<g id="edge3" class="edge" data-name="devices.py--class MicroController">
+
+<path fill="none" stroke="black" d="M387.08,-74.24C403.03,-62.8 424.57,-47.35 440.82,-35.7"/>
+</g>
+<!-- class ControlBoard -->
+<g id="node5" class="node" pointer-events="visible" data-name="class ControlBoard">
+
+<ellipse fill="none" stroke="black" cx="663.11" cy="-18" rx="85.16" ry="18"/>
+<text text-anchor="middle" x="663.11" y="-13.8" font-family="Times,serif" font-size="14.00">class ControlBoard</text>
+</g>
+<!-- devices.py&#45;&#45;class ControlBoard -->
+<g id="edge4" class="edge" data-name="devices.py--class ControlBoard">
+
+<path fill="none" stroke="black" d="M404.41,-78.75C411.61,-76.77 419.07,-74.78 426.11,-73 486.86,-57.62 556.88,-41.92 604.97,-31.43"/>
+</g>
+<!-- measurements.py -->
+<g id="node7" class="node" pointer-events="visible" data-name="measurements.py">
+
+<ellipse fill="none" stroke="black" cx="513.11" cy="-91" rx="78.2" ry="18"/>
+<text text-anchor="middle" x="513.11" y="-86.8" font-family="Times,serif" font-size="14.00">measurements.py</text>
+</g>
+<!-- def get_rds_on -->
+
+<!-- measurements.py&#45;&#45;def get_rds_on -->
+
+<!-- def get_q_gate -->
+<g id="edge6" class="edge" data-name="stress_tests.py--devices.py" data-comment="def get_q_gate">
+
+<path fill="none" stroke="black" d="M426.89,-178.49C413.09,-159.18 390.8,-127.97 377.1,-108.79"/>
+</g>
+<!-- measurements.py&#45;&#45;def get_q_gate -->
+
+<!-- def get_v_threshold -->
+
+<g id="node6" class="node" pointer-events="visible" data-name="stress_tests.py" data-comment="def get_v_threshold">
+
+<ellipse fill="none" stroke="black" cx="439.11" cy="-196.6" rx="66.63" ry="18"/>
+<text text-anchor="middle" x="439.11" y="-192.4" font-family="Times,serif" font-size="14.00">stress_tests.py</text>
+</g><g id="edge5" class="edge" data-name="stress_tests.py--measurements.py" data-comment="def get_v_threshold">
+
+<path fill="none" stroke="black" d="M451.33,-178.49C465.04,-159.3 487.15,-128.34 500.87,-109.13"/>
+<text text-anchor="middle" x="543.26" y="-148" font-family="Times,serif" font-size="14.00">*devices.py objects</text>
+<text text-anchor="middle" x="543.26" y="-131.2" font-family="Times,serif" font-size="14.00">passed as arguments</text>
+</g><g id="node8" class="node" pointer-events="visible" data-name="main.py" data-comment="def get_v_threshold">
+
+<ellipse fill="none" stroke="black" cx="439.11" cy="-269.6" rx="42.33" ry="18"/>
+<text text-anchor="middle" x="439.11" y="-265.4" font-family="Times,serif" font-size="14.00">main.py</text>
+</g><g id="edge7" class="edge" data-name="main.py--stress_tests.py" data-comment="def get_v_threshold">
+
+<path fill="none" stroke="black" d="M439.11,-251.41C439.11,-240.25 439.11,-225.76 439.11,-214.63"/>
+</g></g>
+</svg>
