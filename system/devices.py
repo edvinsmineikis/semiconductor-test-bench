@@ -9,34 +9,39 @@ import json
 import mock_gpio as GPIO
 
 
-# TEKTRONIX TDS7104 Digital Phosphor Oscilloscope
+# TEKTRONIX DPO 7054 Digital Phosphor Oscilloscope
 class Oscilloscope():
-    def __init__(self, resource_name=None, stop_discovery=False):
-        if not stop_discovery:
-            visa = pyvisa.ResourceManager()
-            try:
-                self.rm = visa.open_resource(resource_name)
-            except Exception as err:
-                err_msg = str(err)
-                err_msg += "\n\n"
-                err_msg += "No VISA device found with name: " + str(resource_name)
-                raise Exception(err_msg)
-            self.set_channel(1)
-            self.rm.write('DATA:ENCDG ASCII')
-            self.rm.write('DATA:WIDTH 1')
+    def __init__(self):
+        with open('config.json') as file:
+            self.config = json.load(file)['Oscilloscope']
+        visa = pyvisa.ResourceManager()
+        try:
+            self.rm = visa.open_resource(self.config['resource_name'])
+        except Exception as err:
+            err_msg = str(err)
+            err_msg += "\n\n"
+            err_msg += "No VISA device found with name: " + self.config['resource_name']
+            raise Exception(err_msg)
+        self.set_channel(1)
+        self.rm.write('DATA:ENCDG ASCII')
+        self.rm.write('DATA:WIDTH 1')
 
     def get_curve(self):
         yzero = float(self.rm.query('WFMO:YZE?'))
         ymult = float(self.rm.query('WFMO:YMU?'))
         yoff = float(self.rm.query('WFMO:YOF?'))
-        values = np.array(self.rm.query_ascii_values('CURV?'))
+        values = np.array(self.rm.query_ascii_values('CURV?', converter='f'))
         for a in range(len(values)):
             values[a] = yzero - yoff * ymult + ymult * float(values[a])
         return values
 
     # Sets horizontal scale, input must be scientifically noted string, f.e.: '20e-9', which is 20ns/division.
     def set_horizontal_scale(self, scale):
-        self.rm.write('HORIZONTAL:SAMPLERATE ' + scale)
+        self.rm.write('HORIZONTAL:SCALE ' + scale)
+
+    # 1e6 sets the sample rate to 1 million samples per second
+    def set_horizontal_sample_rate(self, rate):
+        self.rm.write('HORIZONTAL:MODE:SAMPLERATE ' + rate)
 
     def set_channel(self, channel):
         self.rm.write('DATA:SOURCE CH' + str(channel))
@@ -77,36 +82,26 @@ class Oscilloscope():
         return self.rm.query('TRIGGER:STATE?')
 
 
-# Elektro-Automatik PSI9500
+# Elektro-Automatik PSI91500-30
 class PowerSupply():
-    def __init__(self, vid=None, pid=None, stop_discovery=False):
-        if not stop_discovery:
-            ports = serial.tools.list_ports.comports()
-            for port in ports:
-                if port.vid == vid and port.pid == pid:
-                    self.serial = serial.Serial(port=port.name, write_timeout=5)
-                    time.sleep(0.1)
-                    self.send('SYST:LOCK ON', wait=False)
-            else:
-                err_msg = "PowerSupply not found:\n"
-                err_msg += "VID: " + str(vid) + "\n"
-                err_msg += "PID: " + str(pid) + "\n"
-                raise Exception(err_msg)
-
-    def send(self, cmd, wait = True):
-        if self.serial.isOpen() == False:
-            self.serial.open()
-        self.serial.write((cmd+'\n').encode())
-        if wait == True:
-            resp = self.serial.readline().decode()
-            self.serial.close()
-            return resp
+    def __init__(self):
+        with open('config.json') as file:
+            self.config = json.load(file)['PowerSupply']
+        visa = pyvisa.ResourceManager()
+        try:
+            self.rm = visa.open_resource(self.config['resource_name'])
+        except Exception as err:
+            err_msg = str(err)
+            err_msg += "\n\n"
+            err_msg += "No VISA device found with name: " + self.config['resource_name']
+            raise Exception(err_msg)
+        self.rm.write('SYST:LOCK ON')
 
     def set_output_on(self):
-        return self.send('OUTP ON', wait=False)
+        return self.rm.write('OUTP ON')
 
     def set_output_off(self):
-        return self.send('OUTP OFF', wait=False)
+        return self.rm.write('OUTP OFF')
 
 
 # Aim CPX400SP DC Power Supply 60V/20A
@@ -206,14 +201,15 @@ class ControlBoard():
 
 # Arduino Uno R3
 class MicroController():
-    def __init__(self, stop_discovery = False):
-        if not stop_discovery:
-            ports = serial.tools.list_ports.comports()
-            arduino_port = None
-            for port in ports:
-                if port.vid == 0x2341 and port.pid == 0x43:
-                    arduino_port = port.name
-            self.ser = serial.Serial(arduino_port, baudrate=9600, dsrdtr=True, timeout=5)
+    def __init__(self):
+        with open('config.json') as file:
+            self.config = json.load(file)['MicroController']
+        ports = serial.tools.list_ports.comports()
+        arduino_port = None
+        for port in ports:
+            if port.vid == self.config['vid'] and port.pid == self.config['pid']:
+                arduino_port = port.name
+        self.ser = serial.Serial(arduino_port, baudrate=9600, dsrdtr=True, timeout=5)
 
     def send(self, msg):
         self.ser.write(json.dumps(msg).encode())

@@ -1,7 +1,15 @@
 {
-    "devices":{
-        "Oscilloscope":{
-            "sample_rate": 1000
-        }
+    "Oscilloscope": {
+        "resource_name": "TCPIP::192.168.0.194::INSTR",
+        "sample_rate": 1000
+    },
+    
+    "PowerSupply": {
+        "resource_name": "ASRL3::INSTR"
+    },
+
+    "MicroController": {
+        "vid": 9025,
+        "pid": 67
     }
 }
