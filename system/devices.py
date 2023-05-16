@@ -223,7 +223,6 @@ class MicroController():
                 arduino_port = port.name
         self.ser = serial.Serial(arduino_port, baudrate=9600, dsrdtr=True, timeout=5)
 
-    # There will always be a response
     def send(self, msg):
         self.ser.write(json.dumps(msg).encode())
         resp = json.loads(self.ser.readline().decode())
