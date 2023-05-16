@@ -206,13 +206,14 @@ class ControlBoard():
 
 # Arduino Uno R3
 class MicroController():
-    def __init__(self):
-        ports = serial.tools.list_ports.comports()
-        arduino_port = None
-        for port in ports:
-            if port.vid == 0x2341 and port.pid == 0x43:
-                arduino_port = port.name
-        self.ser = serial.Serial(arduino_port, baudrate=9600, dsrdtr=True, timeout=5)
+    def __init__(self, stop_discovery = False):
+        if not stop_discovery:
+            ports = serial.tools.list_ports.comports()
+            arduino_port = None
+            for port in ports:
+                if port.vid == 0x2341 and port.pid == 0x43:
+                    arduino_port = port.name
+            self.ser = serial.Serial(arduino_port, baudrate=9600, dsrdtr=True, timeout=5)
 
     def send(self, msg):
         self.ser.write(json.dumps(msg).encode())

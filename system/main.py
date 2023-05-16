@@ -1,9 +1,7 @@
-from devices import *
+import stress_tests
 
-ps = PowerSupply(stop_discovery=True)
-ps_small = PowerSupplySmall(stop_discovery=True)
-osc = Oscilloscope(stop_discovery=True)
-board = ControlBoard()
+if __name__ == '__main__':
+    stress_tests.fluctuating_temperature()
 
 
 
