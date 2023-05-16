@@ -4,8 +4,7 @@
 #define TEMP_MUL 5.0 / 1024.0 * 1
 #define PIN_HI_V_G 5
 #define PIN_HI_V_DS 6
-#define PIN_HI_V_G_EN 7
-#define PIN_HI_V_DS_EN 8
+#define LED 13
 
 bool tempController = false;
 volatile float tempValue = 0;
@@ -21,8 +20,7 @@ void setup() {
   pinMode(PIN_COOLER, OUTPUT);
   pinMode(PIN_HI_V_G, OUTPUT);
   pinMode(PIN_HI_V_DS, OUTPUT);
-  pinMode(PIN_HI_V_G_EN, INPUT);
-  pinMode(PIN_HI_V_DS_EN, INPUT);
+  pinMode(LED, OUTPUT);
 
   // Set up the timer to trigger every 10ms
   TCCR1A = 0;
@@ -95,26 +93,29 @@ void loop() {
         if (dataIn["cmd"].as<String>() == "setCoefI") {
           coefI = (float)dataIn["coefI"];
         }
+        if (dataIn["cmd"].as<String>() == "enableHiVG") {
+          if (!digitalRead(PIN_HI_V_DS)) {
+            digitalWrite(PIN_HI_V_G, HIGH);
+            digitalWrite(LED, HIGH);
+          }
+        }
+        if (dataIn["cmd"].as<String>() == "disableHiVG") {
+          digitalWrite(PIN_HI_V_G, LOW);
+          digitalWrite(LED, LOW);
+        }
+        if (dataIn["cmd"].as<String>() == "enableHiVDS") {
+          if (!digitalRead(PIN_HI_V_G)) {
+            digitalWrite(PIN_HI_V_DS, HIGH);
+          }
+        }
+        if (dataIn["cmd"].as<String>() == "disableHiVDS") {
+          digitalWrite(PIN_HI_V_DS, LOW);
+        }
       } else {
         dataOut["status"] = 2;  // No "cmd" key
       }
     }
     serializeJson(dataOut, Serial);
     Serial.write('\n');
-  }
-
-  // Relay safety, HiVG and HiVDS cannot be on at same time
-  if (digitalRead(PIN_HI_V_G_EN) && !digitalRead(PIN_HI_V_DS)) {
-    digitalWrite(PIN_HI_V_G, HIGH);
-  }
-  else {
-    digitalWrite(PIN_HI_V_G, LOW);
-  }
-
-  if (digitalRead(PIN_HI_V_DS_EN) && !digitalRead(PIN_HI_V_G)) {
-    digitalWrite(PIN_HI_V_DS, HIGH);
-  }
-  else {
-    digitalWrite(PIN_HI_V_DS, LOW);
   }
 }

@@ -35,11 +35,11 @@ class Oscilloscope():
             values[a] = yzero - yoff * ymult + ymult * float(values[a])
         return values
 
-    # Sets horizontal scale, input must be scientifically noted string, f.e.: '20e-9', which is 20ns/division.
+    # '1e-3' sets scale to 1ms per devision
     def set_horizontal_scale(self, scale):
         self.rm.write('HORIZONTAL:SCALE ' + scale)
 
-    # 1e6 sets the sample rate to 1 million samples per second
+    # '1e6' sets the sample rate to 1 million samples per second
     def set_horizontal_sample_rate(self, rate):
         self.rm.write('HORIZONTAL:MODE:SAMPLERATE ' + rate)
 
@@ -95,13 +95,25 @@ class PowerSupply():
             err_msg += "\n\n"
             err_msg += "No VISA device found with name: " + self.config['resource_name']
             raise Exception(err_msg)
+        self.set_syst_lock_on()
+
+    def set_syst_lock_on(self):
         self.rm.write('SYST:LOCK ON')
 
+    def set_syst_lock_off(self):
+        self.rm.write('SYST:LOCK OFF')
+
     def set_output_on(self):
-        return self.rm.write('OUTP ON')
+        self.rm.write('OUTP ON')
 
     def set_output_off(self):
-        return self.rm.write('OUTP OFF')
+        self.rm.write('OUTP OFF')
+    
+    def set_voltage(self, voltage):
+        self.rm.write('VOLT ' + str(voltage))
+
+    def set_current(self, current):
+        self.rm.write('CURR: ' + str(current))
 
 
 # Aim CPX400SP DC Power Supply 60V/20A
@@ -272,4 +284,29 @@ class MicroController():
             'tempTarget': coef
         }
         return self.send(msg)
+    
+    def set_high_voltage_gate_on(self):
+        msg = {
+            'cmd': 'enableHiVG',
+        }
+        return self.send(msg)
+    
+    def set_high_voltage_gate_off(self):
+        msg = {
+            'cmd': 'disableHiVG',
+        }
+        return self.send(msg)
+    
+    def set_high_voltage_drain_source_on(self):
+        msg = {
+            'cmd': 'enableHiVDS',
+        }
+        return self.send(msg)
+    
+    def set_high_voltage_drain_source_off(self):
+        msg = {
+            'cmd': 'disableHiVDS',
+        }
+        return self.send(msg)
+
 
