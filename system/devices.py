@@ -4,6 +4,7 @@ import time
 import atexit
 import pyvisa
 import numpy as np
+import json
 # import RPi.GPIO as GPIO
 import mock_gpio as GPIO
 
@@ -203,4 +204,75 @@ class ControlBoard():
         return GPIO.input(self.pins_in["HiVG_ready"])
 
 
+# Arduino Uno R3
+class MicroController():
+    def __init__(self):
+        ports = serial.tools.list_ports.comports()
+        arduino_port = None
+        for port in ports:
+            if port.vid == 0x2341 and port.pid == 0x43:
+                arduino_port = port.name
+        self.ser = serial.Serial(arduino_port, baudrate=9600, dsrdtr=True, timeout=5)
+
+    def send(self, msg):
+        self.ser.write(json.dumps(msg).encode())
+        resp = json.loads(self.ser.readline().decode())
+        return resp
+
+    def get_temperature(self):
+        msg = {
+            'cmd': 'getTemp'
+        }
+        return self.send(msg)
+    
+    def get_temperature_controller_target(self):
+        msg = {
+            'cmd': 'getTempTarget'
+        }
+        return self.send(msg)
+    
+    def get_temperature_controller_P(self):
+        msg = {
+            'cmd': 'getCoefP'
+        }
+        return self.send(msg)
+    
+    def get_temperature_controller_I(self):
+        msg = {
+            'cmd': 'getCoefI'
+        }
+        return self.send(msg)
+    
+    def set_temperature_controller_on(self):
+        msg = {
+            'cmd': 'enableTempController'
+        }
+        return self.send(msg)
+    
+    def set_temperature_controller_off(self):
+        msg = {
+            'cmd': 'disableTempController'
+        }
+        return self.send(msg)
+    
+    def set_temperature_controller_target(self, target):
+        msg = {
+            'cmd': 'setTempTarget',
+            'tempTarget': target
+        }
+        return self.send(msg)
+    
+    def set_temperature_controller_P(self, coef):
+        msg = {
+            'cmd': 'setCoefP',
+            'tempTarget': coef
+        }
+        return self.send(msg)
+    
+    def set_temperature_controller_I(self, coef):
+        msg = {
+            'cmd': 'setCoefI',
+            'tempTarget': coef
+        }
+        return self.send(msg)
 

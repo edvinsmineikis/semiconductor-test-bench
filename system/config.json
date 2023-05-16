@@ -1,0 +1,7 @@
+{
+    "devices":{
+        "Oscilloscope":{
+            "sample_rate": 1000
+        }
+    }
+}
