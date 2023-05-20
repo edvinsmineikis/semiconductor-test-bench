@@ -1,12 +1,9 @@
 import serial
 import serial.tools.list_ports
 import time
-import atexit
 import pyvisa
 import numpy as np
 import json
-# import RPi.GPIO as GPIO
-import mock_gpio as GPIO
 
 
 # TEKTRONIX DPO 7054 Digital Phosphor Oscilloscope
@@ -173,49 +170,11 @@ class PowerSupplySmall():
         return self.send('I1 '+str(amps), wait=False)
 
 
-# Control board with Raspberry Pi
+# Arduino Uno R3 + Control board
 class ControlBoard():
     def __init__(self):
-        atexit.register(GPIO.cleanup)
-        GPIO.setmode(GPIO.BCM)
-        self.pins_in = {
-            "HiVDS_ready": 27,
-            "HiVG_ready": 24
-        }
-        self.pins_out = {
-            "HiVDS_start": 17,
-            "HiVG_start": 23
-        }
-
-        for pin in self.pins_in.values():
-            GPIO.setup(pin, GPIO.IN)
-        for pin in self.pins_out.values():
-            GPIO.setup(pin, GPIO.OUT)
-
-    def set_HiVDS_on(self):
-        GPIO.output(self.pins_out["HiVDS_start"], GPIO.HIGH)
-
-    def set_HiVDS_off(self):
-        GPIO.output(self.pins_out["HiVDS_start"], GPIO.LOW)
-
-    def get_HiVDS_is_enabled(self):
-        return GPIO.input(self.pins_in["HiVDS_ready"])
-    
-    def set_HiVG_on(self):
-        GPIO.output(self.pins_out["HiVG_start"], GPIO.HIGH)
-
-    def set_HiVG_off(self):
-        GPIO.output(self.pins_out["HiVG_start"], GPIO.LOW)
-
-    def get_HiVG_is_enabled(self):
-        return GPIO.input(self.pins_in["HiVG_ready"])
-
-
-# Arduino Uno R3
-class MicroController():
-    def __init__(self):
         with open('config.json') as file:
-            self.config = json.load(file)['MicroController']
+            self.config = json.load(file)['ControlBoard']
         ports = serial.tools.list_ports.comports()
         arduino_port = None
         for port in ports:
