@@ -5,6 +5,7 @@
 #define PIN_HI_V_G 5
 #define PIN_HI_V_DS 6
 #define PIN_GS_RELAY 7
+#define PIN_PWM_ON 8
 #define PIN_PWM 9
 
 bool tempController = false;
@@ -22,6 +23,7 @@ void setup() {
   pinMode(PIN_HI_V_G, OUTPUT);
   pinMode(PIN_HI_V_DS, OUTPUT);
   pinMode(PIN_GS_RELAY, OUTPUT);
+  pinMode(PIN_PWM_ON, OUTPUT);
   pinMode(PIN_PWM, OUTPUT);
 
 
@@ -121,6 +123,12 @@ void loop() {
         }
         else if (dataIn["cmd"].as<String>() == "setPwm") {
           analogWrite(PIN_PWM, dataIn["value"]);
+        }
+        else if (dataIn["cmd"].as<String>() == "setPwmOn") {
+          digitalWrite(PIN_PWM_ON, HIGH);
+        }
+        else if (dataIn["cmd"].as<String>() == "setPwmOff") {
+          digitalWrite(PIN_PWM_ON, LOW);
         }
       } else {
         dataOut["status"] = 2;  // No "cmd" key

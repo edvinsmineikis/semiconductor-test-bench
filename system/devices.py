@@ -284,11 +284,24 @@ class ControlBoard():
         }
         return self.send(msg)
     
-    def set_pwm(self, value):
+    def set_pwm_duty(self, value):
         msg = {
             'cmd': 'setPwm',
             'value': value
         }
         return self.send(msg)
+    
+    def set_pwm_on(self):
+        msg = {
+            'cmd': 'setPwmOn',
+        }
+        return self.send(msg)
+    
+    def set_pwm_off(self):
+        msg = {
+            'cmd': 'setPwmOff',
+        }
+        return self.send(msg)
+
 
 
