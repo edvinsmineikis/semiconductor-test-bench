@@ -4,7 +4,8 @@
 #define TEMP_MUL 5.0 / 1024.0 * 1
 #define PIN_HI_V_G 5
 #define PIN_HI_V_DS 6
-#define LED 13
+#define PIN_GS_RELAY 7
+#define PIN_PWM 9
 
 bool tempController = false;
 volatile float tempValue = 0;
@@ -15,29 +16,32 @@ float I = 0;
 
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(57600);
   pinMode(PIN_HEATER, OUTPUT);
   pinMode(PIN_COOLER, OUTPUT);
   pinMode(PIN_HI_V_G, OUTPUT);
   pinMode(PIN_HI_V_DS, OUTPUT);
-  pinMode(LED, OUTPUT);
+  pinMode(PIN_GS_RELAY, OUTPUT);
+  pinMode(PIN_PWM, OUTPUT);
+
 
   // Set up the timer to trigger every 10ms
-  TCCR1A = 0;
-  TCCR1B = 0;
-  TCNT1 = 0;
-  OCR1A = 156;  // 16MHz clock, prescaler of 1024, 156 = 10ms
-  TCCR1B |= (1 << WGM12);
-  TCCR1B |= (1 << CS12) | (1 << CS10);  // prescaler of 1024
-  TIMSK1 |= (1 << OCIE1A);
+  TCCR2A = 0;
+  TCCR2B = 0;
+  TCNT2 = 0;
+  OCR2A = 156;  // 16MHz clock, prescaler of 1024, 156 = 10ms
+  TCCR2B |= (1 << WGM12);
+  TCCR2B |= (1 << CS22) | (1 << CS21) | (1 << CS20);  // prescaler of 1024
+  TIMSK2 |= (1 << OCIE2A);
 }
 
-ISR(TIMER1_COMPA_vect) {
+ISR(TIMER2_COMPA_vect) {
   if (tempController == true) {
     tempValue = analogRead(A0) * TEMP_MUL;
     updateController();
   }
 }
+
 
 void updateController() {
   float P = (tempTarget - tempValue) * coefP;
@@ -55,8 +59,8 @@ void updateController() {
 void loop() {
   // Communication handling
   if (Serial.available()) {
-    StaticJsonDocument<128> dataIn;
-    StaticJsonDocument<128> dataOut;
+    StaticJsonDocument<64> dataIn;
+    StaticJsonDocument<64> dataOut;
 
     DeserializationError err = deserializeJson(dataIn, Serial.readStringUntil('\n'));
     if (err) {
@@ -67,49 +71,56 @@ void loop() {
         if (dataIn["cmd"].as<String>() == "getTemp") {
           dataOut["temp"] = tempValue;
         }
-        if (dataIn["cmd"].as<String>() == "getTempTarget") {
+        else if (dataIn["cmd"].as<String>() == "getTempTarget") {
           dataOut["tempTarget"] = tempTarget;
         }
-        if (dataIn["cmd"].as<String>() == "getCoefP") {
+        else if (dataIn["cmd"].as<String>() == "getCoefP") {
           dataOut["coefP"] = coefP;
         }
-        if (dataIn["cmd"].as<String>() == "getCoefI") {
+        else if (dataIn["cmd"].as<String>() == "getCoefI") {
           dataOut["coefI"] = coefI;
         }
-        if (dataIn["cmd"].as<String>() == "enableTempController") {
+        else if (dataIn["cmd"].as<String>() == "enableTempController") {
           tempController = true;
         }
-        if (dataIn["cmd"].as<String>() == "disableTempController") {
+        else if (dataIn["cmd"].as<String>() == "disableTempController") {
           tempController = false;
           digitalWrite(PIN_HEATER, LOW);
           digitalWrite(PIN_COOLER, LOW);
         }
-        if (dataIn["cmd"].as<String>() == "setTempTarget") {
+        else if (dataIn["cmd"].as<String>() == "setTempTarget") {
           tempTarget = (float)dataIn["tempTarget"];
         }
-        if (dataIn["cmd"].as<String>() == "setCoefP") {
+        else if (dataIn["cmd"].as<String>() == "setCoefP") {
           coefP = (float)dataIn["coefP"];
         }
-        if (dataIn["cmd"].as<String>() == "setCoefI") {
+        else if (dataIn["cmd"].as<String>() == "setCoefI") {
           coefI = (float)dataIn["coefI"];
         }
-        if (dataIn["cmd"].as<String>() == "enableHiVG") {
+        else if (dataIn["cmd"].as<String>() == "enableHiVG") {
           if (!digitalRead(PIN_HI_V_DS)) {
             digitalWrite(PIN_HI_V_G, HIGH);
-            digitalWrite(LED, HIGH);
           }
         }
-        if (dataIn["cmd"].as<String>() == "disableHiVG") {
+        else if (dataIn["cmd"].as<String>() == "disableHiVG") {
           digitalWrite(PIN_HI_V_G, LOW);
-          digitalWrite(LED, LOW);
         }
-        if (dataIn["cmd"].as<String>() == "enableHiVDS") {
+        else if (dataIn["cmd"].as<String>() == "enableHiVDS") {
           if (!digitalRead(PIN_HI_V_G)) {
             digitalWrite(PIN_HI_V_DS, HIGH);
           }
         }
-        if (dataIn["cmd"].as<String>() == "disableHiVDS") {
+        else if (dataIn["cmd"].as<String>() == "disableHiVDS") {
           digitalWrite(PIN_HI_V_DS, LOW);
+        }
+        else if (dataIn["cmd"].as<String>() == "enableGsRelay") {
+          digitalWrite(PIN_GS_RELAY, HIGH);
+        }
+        else if (dataIn["cmd"].as<String>() == "disableGsRelay") {
+          digitalWrite(PIN_GS_RELAY, LOW);
+        }
+        else if (dataIn["cmd"].as<String>() == "setPwm") {
+          analogWrite(PIN_PWM, dataIn["value"]);
         }
       } else {
         dataOut["status"] = 2;  // No "cmd" key

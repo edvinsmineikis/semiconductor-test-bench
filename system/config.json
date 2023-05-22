@@ -10,6 +10,7 @@
 
     "ControlBoard": {
         "vid": 9025,
-        "pid": 67
+        "pid": 67,
+        "baudrate": 57600
     }
 }

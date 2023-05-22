@@ -1,6 +1,5 @@
 import serial
 import serial.tools.list_ports
-import time
 import pyvisa
 import numpy as np
 import json
@@ -121,12 +120,11 @@ class PowerSupplySmall():
             for port in ports:
                 if port.vid == vid and port.pid == pid:
                     self.serial = serial.Serial(port=port.name, write_timeout=5)
-                    time.sleep(0.1)
-            else:
-                err_msg = "PowerSupplySmall not found:\n"
-                err_msg += "VID: " + str(vid) + "\n"
-                err_msg += "PID: " + str(pid) + "\n"
-                raise Exception(err_msg)
+                    return
+            err_msg = "PowerSupplySmall not found:\n"
+            err_msg += "VID: " + str(vid) + "\n"
+            err_msg += "PID: " + str(pid) + "\n"
+            raise Exception(err_msg)
             
 
     def send(self, cmd, wait=True):
@@ -176,14 +174,20 @@ class ControlBoard():
         with open('config.json') as file:
             self.config = json.load(file)['ControlBoard']
         ports = serial.tools.list_ports.comports()
-        arduino_port = None
+        self.ser = None
         for port in ports:
             if port.vid == self.config['vid'] and port.pid == self.config['pid']:
-                arduino_port = port.name
-        self.ser = serial.Serial(arduino_port, baudrate=9600, dsrdtr=True, timeout=5)
+                port = port.name
+                self.ser = serial.Serial(port, baudrate=self.config['baudrate'], dsrdtr=True, timeout=5)
+                return
+        err_msg = "ControlBoard not found:\n"
+        err_msg += "VID: " + str(self.config['vid']) + "\n"
+        err_msg += "PID: " + str(self.config['pid']) + "\n"
+        raise Exception(err_msg)
 
     def send(self, msg):
         self.ser.write(json.dumps(msg).encode())
+        self.ser.write(b'\n')
         resp = json.loads(self.ser.readline().decode())
         return resp
 
@@ -265,6 +269,25 @@ class ControlBoard():
     def set_high_voltage_drain_source_off(self):
         msg = {
             'cmd': 'disableHiVDS',
+        }
+        return self.send(msg)
+    
+    def set_gs_relay_on(self):
+        msg = {
+            'cmd': 'enableGsRelay',
+        }
+        return self.send(msg)
+    
+    def set_gs_relay_off(self):
+        msg = {
+            'cmd': 'disableGsRelay',
+        }
+        return self.send(msg)
+    
+    def set_pwm(self, value):
+        msg = {
+            'cmd': 'setPwm',
+            'value': value
         }
         return self.send(msg)
 
