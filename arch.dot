@@ -1,0 +1,10 @@
+graph G {
+    "main.py" -- "stress_tests.py"
+
+    "stress_tests.py" -- "devices.py"
+    "stress_tests.py" -- "measurements.py" [label="*devices.py objects\npassed as arguments"]
+
+    "devices.py" -- "class Oscilloscope"
+    "devices.py" -- "class PowerSupply"
+    "devices.py" -- "class ControlBoard"
+}
