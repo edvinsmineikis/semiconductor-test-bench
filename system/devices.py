@@ -31,6 +31,16 @@ class Oscilloscope():
             values[a] = yzero - yoff * ymult + ymult * float(values[a])
         return values
 
+    # Returns AUTO or NORMAL.
+    def get_trigger_mode(self):
+        return self.rm.query('TRIGGER:A:MODE?')
+    
+    def get_measurement(self, index):
+        return self.rm.query('MEASUREMENT:MEAS' + str(index) + ':VALUE?')
+    
+    def set_measurement_type(self, index, type):
+        self.rm.write('MEASUREMENT:MEAS' + str(index) + ':TYPE '+type)
+
     # '1e-3' sets scale to 1ms per devision
     def set_horizontal_scale(self, scale):
         self.rm.write('HORIZONTAL:SCALE ' + scale)
@@ -42,9 +52,7 @@ class Oscilloscope():
     def set_channel(self, channel):
         self.rm.write('DATA:SOURCE CH' + str(channel))
 
-    # Returns AUTO or NORMAL.
-    def get_trigger_mode(self):
-        return self.rm.query('TRIGGER:A:MODE?')
+    
 
     def set_trigger_normal_mode(self):
         self.rm.write('TRIGGER:A:MODE NORMAL')
