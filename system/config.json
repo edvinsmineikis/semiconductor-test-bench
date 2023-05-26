@@ -1,11 +1,12 @@
 {
     "Oscilloscope": {
-        "resource_name": "TCPIP::192.168.0.194::INSTR",
-        "sample_rate": 1000
+        "serial": "B022862",
+        "converter_input_voltage_channel": 4,
+        "converter_output_voltage_channel": 3
     },
     
     "PowerSupply": {
-        "resource_name": "ASRL3::INSTR"
+        "serial": "1423310002"
     },
 
     "ControlBoard": {

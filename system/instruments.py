@@ -4,21 +4,28 @@ import pyvisa
 import numpy as np
 import json
 
+def get_pyvisa_resource(serial_number):
+    rm = pyvisa.ResourceManager()
+    resources = rm.list_resources()
+    for resource in resources:
+        try:
+            instr = rm.open_resource(resource)
+            if serial_number in instr.query('*IDN?'):
+                return resource
+        except:
+            pass
+    raise Exception('Failed to find device with SN: '+str(serial_number))
+
+def get_config():
+    with open('config.json') as file:
+        data = json.load(file)
+        return data
 
 # TEKTRONIX DPO 7054 Digital Phosphor Oscilloscope
 class Oscilloscope():
     def __init__(self):
-        with open('config.json') as file:
-            self.config = json.load(file)['Oscilloscope']
-        visa = pyvisa.ResourceManager()
-        try:
-            self.rm = visa.open_resource(self.config['resource_name'])
-        except Exception as err:
-            err_msg = str(err)
-            err_msg += "\n\n"
-            err_msg += "No VISA device found with name: " + self.config['resource_name']
-            raise Exception(err_msg)
-        self.set_channel(1)
+        self.config = get_config()['Oscilloscope']
+        self.rm = pyvisa.ResourceManager().open_resource(get_pyvisa_resource(self.config['serial']))
         self.rm.write('DATA:ENCDG ASCII')
         self.rm.write('DATA:WIDTH 1')
 
@@ -26,7 +33,7 @@ class Oscilloscope():
         yzero = float(self.rm.query('WFMO:YZE?'))
         ymult = float(self.rm.query('WFMO:YMU?'))
         yoff = float(self.rm.query('WFMO:YOF?'))
-        values = np.array(self.rm.query_ascii_values('CURV?', converter='f'))
+        values = np.array(self.rm.query_ascii_values('CURV?'))
         for a in range(len(values)):
             values[a] = yzero - yoff * ymult + ymult * float(values[a])
         return values
@@ -35,9 +42,15 @@ class Oscilloscope():
     def get_trigger_mode(self):
         return self.rm.query('TRIGGER:A:MODE?')
     
-    def get_measurement(self, index):
+    def get_measurement_value(self, index):
         return self.rm.query('MEASUREMENT:MEAS' + str(index) + ':VALUE?')
     
+    def get_measurement_mean(self, index):
+        return self.rm.query('MEASUREMENT:MEAS' + str(index) + ':MEAN?')
+    
+    def set_autoset(self):
+        self.rm.write('AUTOSET EXECUTE')
+
     def set_measurement_type(self, index, type):
         self.rm.write('MEASUREMENT:MEAS' + str(index) + ':TYPE '+type)
 
@@ -51,8 +64,6 @@ class Oscilloscope():
 
     def set_channel(self, channel):
         self.rm.write('DATA:SOURCE CH' + str(channel))
-
-    
 
     def set_trigger_normal_mode(self):
         self.rm.write('TRIGGER:A:MODE NORMAL')
@@ -89,16 +100,8 @@ class Oscilloscope():
 # Elektro-Automatik PSI91500-30
 class PowerSupply():
     def __init__(self):
-        with open('config.json') as file:
-            self.config = json.load(file)['PowerSupply']
-        visa = pyvisa.ResourceManager()
-        try:
-            self.rm = visa.open_resource(self.config['resource_name'])
-        except Exception as err:
-            err_msg = str(err)
-            err_msg += "\n\n"
-            err_msg += "No VISA device found with name: " + self.config['resource_name']
-            raise Exception(err_msg)
+        self.config = get_config()['PowerSupply']
+        self.rm = pyvisa.ResourceManager().open_resource(get_pyvisa_resource(self.config['serial']))
         self.set_syst_lock_on()
 
     def set_syst_lock_on(self):
@@ -179,8 +182,7 @@ class PowerSupplySmall():
 # Arduino Uno R3 + Control board
 class ControlBoard():
     def __init__(self):
-        with open('config.json') as file:
-            self.config = json.load(file)['ControlBoard']
+        self.config = get_config()['ControlBoard']
         ports = serial.tools.list_ports.comports()
         self.ser = None
         for port in ports:

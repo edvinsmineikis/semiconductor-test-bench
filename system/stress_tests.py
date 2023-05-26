@@ -1,12 +1,15 @@
-from devices import *
 import measurements
 from datetime import datetime
 import time
 
+def log_append(filename, columns):
+    with open(filename, 'a') as file:
+        for column in columns:
+            file.write(str(column) + '\t')
+        file.write('\n')
+
 def fluctuating_temperature():
-    ps = PowerSupply()
-    osc = Oscilloscope()
-    board = ControlBoard()
+    pass
 
 def high_voltage_to_gate():
     pass
@@ -15,13 +18,6 @@ def high_temperature_switching():
     pass
 
 def degradation_test(minutes, minutes_step):
-    def print_to_file(measurements):
-        file = open('degradation_log.tsv', 'a')
-        for meas in measurements:
-            file.write(str(meas) + '\t')
-        file.write('\n')
-        file.close()
-
     osc = Oscilloscope()
     osc.set_channel(3)
     osc.set_measurement_type(1, 'MEAN')
@@ -33,6 +29,6 @@ def degradation_test(minutes, minutes_step):
         pk2pk = float(osc.get_measurement(2))
         measurements = [mean, pk2pk, datetime.now()]
         print(measurements)
-        print_to_file(measurements)
+        log_append('logs/degradation_test.tsv', measurements)
         minutes += minutes_step
         time.sleep(minutes_step * 60)

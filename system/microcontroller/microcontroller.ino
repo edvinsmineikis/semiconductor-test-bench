@@ -1,12 +1,23 @@
 #include <ArduinoJson.h>
 #define PIN_HEATER 3
 #define PIN_COOLER 4
-#define TEMP_MUL 5.0 / 1024.0 * 1
 #define PIN_HI_V_G 5
 #define PIN_HI_V_DS 6
 #define PIN_GS_RELAY 7
 #define PIN_PWM_ON 8
 #define PIN_PWM 9
+#define PIN_TEMP A0
+
+/*
+T1 = 16
+V1 = 0.538902148
+T2 = 180
+V2 = 2.842521167
+y = ax + b
+a = (T2-T1)/(V2-V1) = 71.19232766
+b = -a*V1+T1 = -22.3656982971
+*/
+#define TEMP_MUL 5.0/1024.0*71.19232766-22.3656982971
 
 bool tempController = false;
 volatile float tempValue = 0;
@@ -26,7 +37,6 @@ void setup() {
   pinMode(PIN_PWM_ON, OUTPUT);
   pinMode(PIN_PWM, OUTPUT);
 
-
   // Set up the timer to trigger every 10ms
   TCCR2A = 0;
   TCCR2B = 0;
@@ -38,8 +48,8 @@ void setup() {
 }
 
 ISR(TIMER2_COMPA_vect) {
+  tempValue = analogRead(PIN_TEMP) * TEMP_MUL;
   if (tempController == true) {
-    tempValue = analogRead(A0) * TEMP_MUL;
     updateController();
   }
 }
