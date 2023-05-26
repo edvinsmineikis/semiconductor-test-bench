@@ -14,13 +14,13 @@
         <v-container>
             <v-row>
                 <v-col>
-                    <Parameters />
+                    <Parameters @chart-update="updateChart()"/>
                 </v-col>
             </v-row>
             <v-spacer></v-spacer>
             <v-row>
                 <v-col>
-                    <Chart />
+                    <Chart :chartData="chartData"/>
                 </v-col>
             </v-row>
         </v-container>
@@ -28,9 +28,9 @@
 </template>
 
 <script>
-import ControlMenu from './ControlMenu.vue';
-import Parameters from './Parameters.vue';
-import Chart from './Chart.vue';
+import ControlMenu from "./ControlMenu.vue";
+import Parameters from "./Parameters.vue";
+import Chart from "./Chart.vue";
 
 
 export default {
@@ -41,7 +41,26 @@ export default {
     },
     data() {
         return {
-            drawer: true
+            chartData: []
+        }
+    },
+    methods: {
+        async postCommand(command) {
+            let response = await fetch("http://localhost:5000/commands", {
+                method: "POST",
+                body: JSON.stringify({ "command": command })
+            });
+            let data = await (response).json();
+            return data;
+        },
+        async updateChart() {
+            let data = await this.postCommand("testCmd");
+            this.chartData = [];
+            this.chartData.push([["X"],["Y"]])
+            for (let i in data["got"]) {
+                this.chartData.push([i, data["got"][i]]);
+            }
+            console.log(this.chartData);
         }
     }
 }

@@ -7,6 +7,9 @@
                     <h3>Progress</h3>
                 </v-col>
             </v-row>
+            <v-row>
+                <v-btn @click="$emit('chart-update')" color="blue-darken-1">Update chart</v-btn>
+            </v-row>
         </v-container>
     </v-card>
 </template>

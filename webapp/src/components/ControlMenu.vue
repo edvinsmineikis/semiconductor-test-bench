@@ -21,6 +21,6 @@
 
 
 export default {
-    name: "ControlMenu"
+    name: "ControlMenu",
 }
 </script>

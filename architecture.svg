@@ -1,81 +1,85 @@
 <?xml version="1.0" standalone="no"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="547pt" height="296pt" viewBox="0.00 0.00 547.44 295.6">
-<g id="graph0" class="graph" transform="translate(4,291.6000061035156) scale(1)" data-name="G">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="547pt" height="283pt" viewBox="0.00 0.00 547.44 282.83">
+<g id="graph0" class="graph" transform="translate(4,278.8299865722656) scale(1)" data-name="G">
 
-<polygon fill="white" stroke="none" points="-4,4 -4,-291.6 543.44,-291.6 543.44,4 -4,4"/>
+<polygon fill="white" stroke="none" points="-4,4 -4,-278.83 543.44,-278.83 543.44,4 -4,4"/>
 <!-- main.py -->
 <g id="node1" class="node" pointer-events="visible" data-name="main.py">
 
-<ellipse fill="none" stroke="black" cx="340.11" cy="-269.6" rx="42.33" ry="18"/>
-<text text-anchor="middle" x="340.11" y="-265.4" font-family="Times,serif" font-size="14.00">main.py</text>
+<ellipse fill="none" stroke="black" cx="148.11" cy="-245.42" rx="49.57" ry="29.33"/>
+<text text-anchor="middle" x="148.11" y="-249.62" font-family="Times,serif" font-size="14.00">main.py</text>
+<text text-anchor="middle" x="148.11" y="-232.82" font-family="Times,serif" font-size="14.00">Flask app</text>
 </g>
 <!-- stress_tests.py -->
 <g id="node2" class="node" pointer-events="visible" data-name="stress_tests.py">
 
-<ellipse fill="none" stroke="black" cx="340.11" cy="-196.6" rx="66.63" ry="18"/>
-<text text-anchor="middle" x="340.11" y="-192.4" font-family="Times,serif" font-size="14.00">stress_tests.py</text>
+<ellipse fill="none" stroke="black" cx="196.11" cy="-162" rx="66.63" ry="18"/>
+<text text-anchor="middle" x="196.11" y="-157.8" font-family="Times,serif" font-size="14.00">stress_tests.py</text>
 </g>
 <!-- main.py&#45;&#45;stress_tests.py -->
 <g id="edge1" class="edge" data-name="main.py--stress_tests.py">
 
-<path fill="none" stroke="black" d="M340.11,-251.41C340.11,-240.25 340.11,-225.76 340.11,-214.63"/>
+<path fill="none" stroke="black" d="M164.09,-217.31C171.29,-205.09 179.58,-191.04 185.92,-180.28"/>
 </g>
 <!-- devices.py -->
-<g id="node3" class="node" pointer-events="visible" data-name="devices.py">
 
-<ellipse fill="none" stroke="black" cx="266.11" cy="-91" rx="52.13" ry="18"/>
-<text text-anchor="middle" x="266.11" y="-86.8" font-family="Times,serif" font-size="14.00">devices.py</text>
-</g>
 <!-- stress_tests.py&#45;&#45;devices.py -->
-<g id="edge2" class="edge" data-name="stress_tests.py--devices.py">
+<g id="edge2" class="edge" data-name="main.py--measurements.py" data-comment="stress_tests.py--devices.py">
 
-<path fill="none" stroke="black" d="M327.89,-178.49C314.09,-159.18 291.8,-127.97 278.1,-108.79"/>
+<path fill="none" stroke="black" d="M134.74,-216.98C129.63,-205.72 124.09,-192.43 120.11,-180 112.29,-155.63 106.76,-126.46 103.75,-108.33"/>
 </g>
 <!-- measurements.py -->
-<g id="node4" class="node" pointer-events="visible" data-name="measurements.py">
+<g id="node3" class="node" pointer-events="visible" data-name="measurements.py">
 
-<ellipse fill="none" stroke="black" cx="414.11" cy="-91" rx="78.2" ry="18"/>
-<text text-anchor="middle" x="414.11" y="-86.8" font-family="Times,serif" font-size="14.00">measurements.py</text>
+<ellipse fill="none" stroke="black" cx="101.11" cy="-90" rx="78.2" ry="18"/>
+<text text-anchor="middle" x="101.11" y="-85.8" font-family="Times,serif" font-size="14.00">measurements.py</text>
 </g>
 <!-- stress_tests.py&#45;&#45;measurements.py -->
-<g id="edge3" class="edge" data-name="stress_tests.py--measurements.py">
+<g id="edge4" class="edge" data-name="stress_tests.py--measurements.py">
 
-<path fill="none" stroke="black" d="M352.33,-178.49C366.04,-159.3 388.15,-128.34 401.87,-109.13"/>
-<text text-anchor="middle" x="445.26" y="-148" font-family="Times,serif" font-size="14.00">*devices.py objects</text>
-<text text-anchor="middle" x="445.26" y="-131.2" font-family="Times,serif" font-size="14.00">passed as arguments</text>
+<path fill="none" stroke="black" d="M174.07,-144.76C158.94,-133.62 138.92,-118.87 123.68,-107.63"/>
 </g>
 <!-- class Oscilloscope -->
 <g id="node5" class="node" pointer-events="visible" data-name="class Oscilloscope">
 
 <ellipse fill="none" stroke="black" cx="82.11" cy="-18" rx="82.21" ry="18"/>
 <text text-anchor="middle" x="82.11" y="-13.8" font-family="Times,serif" font-size="14.00">class Oscilloscope</text>
-</g>
-<!-- devices.py&#45;&#45;class Oscilloscope -->
-<g id="edge4" class="edge" data-name="devices.py--class Oscilloscope">
+</g><g id="edge3" class="edge" data-name="stress_tests.py--instruments.py" data-comment="class Oscilloscope">
 
-<path fill="none" stroke="black" d="M232.36,-76.98C201.03,-64.89 154.38,-46.89 121.39,-34.16"/>
+<path fill="none" stroke="black" d="M212.69,-144.41C223.85,-133.25 238.5,-118.6 249.64,-107.47"/>
 </g>
 <!-- devices.py&#45;&#45;class Oscilloscope -->
 
-<!-- devices.py&#45;&#45;class Oscilloscope -->
-<g id="node6" class="node" pointer-events="visible" data-name="class PowerSupply" data-comment="devices.py--class Oscilloscope">
+<!-- class PowerSupply -->
+<g id="node6" class="node" pointer-events="visible" data-name="class PowerSupply">
 
 <ellipse fill="none" stroke="black" cx="266.11" cy="-18" rx="84.03" ry="18"/>
 <text text-anchor="middle" x="266.11" y="-13.8" font-family="Times,serif" font-size="14.00">class PowerSupply</text>
 </g>
-<!-- devices.py&#45;&#45;class P -->
-<g id="edge5" class="edge" data-name="devices.py--class PowerSupply" data-comment="devices.py--class P">
+<!-- devices.py&#45;&#45;class PowerSupply -->
 
-<path fill="none" stroke="black" d="M266.11,-72.81C266.11,-61.65 266.11,-47.16 266.11,-36.03"/>
-</g><g id="node7" class="node" pointer-events="visible" data-name="class ControlBoard" data-comment="devices.py--class P">
+<!-- class ControlBoard -->
+<g id="node7" class="node" pointer-events="visible" data-name="class ControlBoard">
 
 <ellipse fill="none" stroke="black" cx="454.11" cy="-18" rx="85.16" ry="18"/>
 <text text-anchor="middle" x="454.11" y="-13.8" font-family="Times,serif" font-size="14.00">class ControlBoard</text>
 </g>
-<!-- devices.py&#45;&#45;class C -->
-<g id="edge6" class="edge" data-name="devices.py--class ControlBoard" data-comment="devices.py--class C">
+<!-- devices.py&#45;&#45;class ControlBoard -->
+<!-- devices.py&#45;&#45;class ControlBoard -->
+<g id="node4" class="node" pointer-events="visible" data-name="instruments.py" data-comment="devices.py--class ControlBoard">
 
-<path fill="none" stroke="black" d="M300.15,-77.14C332.11,-65.07 379.93,-47.01 413.78,-34.23"/>
+<ellipse fill="none" stroke="black" cx="266.11" cy="-90" rx="68.34" ry="18"/>
+<text text-anchor="middle" x="266.11" y="-85.8" font-family="Times,serif" font-size="14.00">instruments.py</text>
 </g>
-</g>
+
+<g id="edge5" class="edge" data-name="instruments.py--class Oscilloscope" data-comment="devices.py--class ControlBoard">
+
+<path fill="none" stroke="black" d="M228.43,-74.67C197.41,-62.87 153.56,-46.18 121.96,-34.16"/>
+</g><g id="edge6" class="edge" data-name="instruments.py--class PowerSupply" data-comment="devices.py--class ControlBoard">
+
+<path fill="none" stroke="black" d="M266.11,-71.7C266.11,-60.85 266.11,-46.92 266.11,-36.1"/>
+</g><g id="edge7" class="edge" data-name="instruments.py--class ControlBoard" data-comment="devices.py--class ControlBoard">
+
+<path fill="none" stroke="black" d="M304.6,-74.67C336.29,-62.87 381.1,-46.18 413.38,-34.16"/>
+</g></g>
 </svg>

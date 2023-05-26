@@ -1,10 +1,12 @@
 graph G {
+    "main.py" [label="main.py\nFlask app"]
     "main.py" -- "stress_tests.py"
+    "main.py" -- "measurements.py"
 
-    "stress_tests.py" -- "devices.py"
-    "stress_tests.py" -- "measurements.py" [label="*devices.py objects\npassed as arguments"]
+    "stress_tests.py" -- "instruments.py"
+    "stress_tests.py" -- "measurements.py"
 
-    "devices.py" -- "class Oscilloscope"
-    "devices.py" -- "class PowerSupply"
-    "devices.py" -- "class ControlBoard"
+    "instruments.py" -- "class Oscilloscope"
+    "instruments.py" -- "class PowerSupply"
+    "instruments.py" -- "class ControlBoard"
 }
