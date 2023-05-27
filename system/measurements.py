@@ -1,4 +1,5 @@
 import time
+import numpy as np
 
 def drain_source_resistance():
     pass
@@ -23,4 +24,10 @@ def converter_efficiency(instruments):
 
 def get_curve(instruments):
     osc = instruments['Oscilloscope']
-    return osc.get_curve()
+    yzero = float(osc.query('WFMO:YZE?'))
+    ymult = float(osc.query('WFMO:YMU?'))
+    yoff = float(osc.query('WFMO:YOF?'))
+    values = np.array(osc.rm.query_ascii_values('CURV?'))
+    for a in range(len(values)):
+        values[a] = yzero - yoff * ymult + ymult * float(values[a])
+    return values.tolist()

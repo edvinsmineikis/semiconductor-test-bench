@@ -101,13 +101,13 @@ void loop() {
           digitalWrite(PIN_COOLER, LOW);
         }
         else if (dataIn["cmd"].as<String>() == "setTempTarget") {
-          tempTarget = (float)dataIn["tempTarget"];
+          tempTarget = (float)dataIn["value"];
         }
         else if (dataIn["cmd"].as<String>() == "setCoefP") {
-          coefP = (float)dataIn["coefP"];
+          coefP = (float)dataIn["value"];
         }
         else if (dataIn["cmd"].as<String>() == "setCoefI") {
-          coefI = (float)dataIn["coefI"];
+          coefI = (float)dataIn["value"];
         }
         else if (dataIn["cmd"].as<String>() == "enableHiVG") {
           if (!digitalRead(PIN_HI_V_DS)) {

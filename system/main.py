@@ -5,40 +5,25 @@ from flask import Flask, request
 from flask_cors import CORS
 import json
 
-
 app = Flask('semiconductorTestBench')
 app.config['JSON_AS_ASCII'] = False
 CORS(app)
 
+@app.route('/commands', methods=['POST'])
+def commands_route():
+    if request.method == 'POST':
+        pass
+
 
 instruments = {
-    "Oscilloscope": Oscilloscope()
+    #"Oscilloscope": Oscilloscope()
     #"PowerSupply": PowerSupply(),
     #"ControlBoard": ControlBoard()
 }
-instruments['Oscilloscope'].set_channel(3)
-instruments['Oscilloscope'].set_horizontal_scale('1e-2')
-
-@app.route('/commands', methods=['GET', 'POST'])
-def commands():
-    if request.method == 'GET':
-        msg = {
-            'content': 'no content' 
-        }
-        return msg
-    if request.method == 'POST':
-        
-        msg = {
-            #'answer': measurements.get_curve(instruments).tolist()
-            'got': measurements.get_curve(instruments).tolist()
-        }
-        return msg
-
-
+#instruments['Oscilloscope'].write('DATA:SOURCE CH3')
+#instruments['Oscilloscope'].write('HORIZONTAL:SCALE 1e-2')
 
 if __name__ == '__main__':
-    #stress_tests.test_twice()
-    #stress_tests.test_twice()
     app.run(host='0.0.0.0', port=5000)
 
 
