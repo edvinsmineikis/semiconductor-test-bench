@@ -14,13 +14,13 @@
         <v-container>
             <v-row>
                 <v-col>
-                    <Parameters @chart-update="updateChart()"/>
+                    <Parameters @chart-update="updateChart()" />
                 </v-col>
             </v-row>
             <v-spacer></v-spacer>
             <v-row>
                 <v-col>
-                    <Chart :chartData="chartData"/>
+                    <Chart :chartData="chartData" />
                 </v-col>
             </v-row>
         </v-container>
@@ -45,22 +45,24 @@ export default {
         }
     },
     methods: {
-        async postCommand(command) {
+        async postCommand(command, value = 0) {
             let response = await fetch("http://localhost:5000/commands", {
                 method: "POST",
-                body: JSON.stringify({ "command": command })
+                body: JSON.stringify({
+                    "command": command,
+                    "value": value
+                })
             });
             let data = await (response).json();
             return data;
         },
         async updateChart() {
-            let data = await this.postCommand("testCmd");
+            let data = await this.postCommand("getCurve");
             this.chartData = [];
-            this.chartData.push([["X"],["Y"]])
+            this.chartData.push([["X"], ["Y"]])
             for (let i in data["got"]) {
                 this.chartData.push([i, data["got"][i]]);
             }
-            console.log(this.chartData);
         }
     }
 }
