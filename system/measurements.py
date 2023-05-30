@@ -1,6 +1,3 @@
-import time
-import numpy as np
-
 def drain_source_resistance():
     pass
 
@@ -27,7 +24,7 @@ def get_curve(instruments):
     yzero = float(osc.query('WFMO:YZE?'))
     ymult = float(osc.query('WFMO:YMU?'))
     yoff = float(osc.query('WFMO:YOF?'))
-    values = np.array(osc.rm.query_ascii_values('CURV?'))
+    values = osc.rm.query_ascii_values('CURV?')
     for a in range(len(values)):
         values[a] = yzero - yoff * ymult + ymult * float(values[a])
-    return values.tolist()
+    return values
