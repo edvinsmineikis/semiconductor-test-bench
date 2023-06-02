@@ -25,6 +25,6 @@ def get_curve(instruments):
     ymult = float(osc.query('WFMO:YMU?'))
     yoff = float(osc.query('WFMO:YOF?'))
     values = osc.rm.query_ascii_values('CURV?')
-    for a in range(len(values)):
-        values[a] = yzero - yoff * ymult + ymult * float(values[a])
+    for value in values:
+        value = yzero - yoff * ymult + ymult * float(value)
     return values

@@ -25,31 +25,46 @@ class Oscilloscope():
     def __init__(self):
         self.config = get_config()['Oscilloscope']
         self.rm = pyvisa.ResourceManager().open_resource(get_pyvisa_resource(self.config['serial']))
-        self.write('DATA:ENCDG ASCII')
-        self.write('DATA:WIDTH 1')
-
-    def write(self, command):
-        self.rm.write(command)
+        self.query('DATA:ENCDG ASCII')
+        self.query('DATA:WIDTH 1')
 
     def query(self, command):
-        return self.rm.query(command)
+        if ' ' in command:
+            self.rm.write(command)
+            return {
+                "message": None
+            }
+        else:
+            return {
+                "message": self.rm.query(command)
+            }
 
 
 class PowerSupply():
     def __init__(self):
         self.config = get_config()['PowerSupply']
         self.rm = pyvisa.ResourceManager().open_resource(get_pyvisa_resource(self.config['serial']))
-        self.set_syst_lock_on()
-
-    def write(self, command):
-        self.rm.write(command)
 
     def query(self, command):
-        return self.rm.query(command)
+        if ' ' in command:
+            self.rm.write(command)
+            return {
+                "message": None
+            }
+        else:
+            return {
+                "message": self.rm.query(command)
+            }
 
 
 class ControlBoard():
     def __init__(self):
+        self.errors = {
+            0: 'OK',
+            1: 'Deserialization error',
+            2: 'No command key',
+            3: 'Invalid command'
+        }
         self.config = get_config()['ControlBoard']
         ports = serial.tools.list_ports.comports()
         self.ser = None
@@ -67,6 +82,7 @@ class ControlBoard():
         self.ser.write(json.dumps(msg).encode())
         self.ser.write(b'\n')
         resp = json.loads(self.ser.readline().decode())
+        resp['status'] = self.errors[resp['status']]
         return resp
     
     def query(self, cmd, value=0):

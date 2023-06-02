@@ -140,6 +140,9 @@ void loop() {
         else if (dataIn["cmd"].as<String>() == "setPwmOff") {
           digitalWrite(PIN_PWM_ON, LOW);
         }
+        else {
+          dataOut["status"] = 3;
+        }
       } else {
         dataOut["status"] = 2;  // No "cmd" key
       }

@@ -14,13 +14,15 @@
         <v-container>
             <v-row>
                 <v-col>
-                    <Parameters @chart-update="updateChart()" />
+                    <PowerSupply/>
+                </v-col>
+                <v-col>
+                    <ControlBoard/>
                 </v-col>
             </v-row>
-            <v-spacer></v-spacer>
             <v-row>
                 <v-col>
-                    <Chart :chartData="chartData" />
+                    <Oscilloscope/>
                 </v-col>
             </v-row>
         </v-container>
@@ -29,41 +31,29 @@
 
 <script>
 import ControlMenu from "./ControlMenu.vue";
-import Parameters from "./Parameters.vue";
-import Chart from "./Chart.vue";
+import PowerSupply from "./PowerSupply.vue";
+import ControlBoard from "./ControlBoard.vue";
+import Oscilloscope from "./Oscilloscope.vue";
+
 
 
 export default {
     components: {
         ControlMenu,
-        Parameters,
-        Chart
+        PowerSupply,
+        ControlBoard,
+        Oscilloscope
     },
     data() {
         return {
             chartData: []
         }
-    },
-    methods: {
-        async postCommand(command, value = 0) {
-            let response = await fetch("http://localhost:5000/commands", {
-                method: "POST",
-                body: JSON.stringify({
-                    "command": command,
-                    "value": value
-                })
-            });
-            let data = await (response).json();
-            return data;
-        },
-        async updateChart() {
-            let data = await this.postCommand("getCurve");
-            this.chartData = [];
-            this.chartData.push([["X"], ["Y"]])
-            for (let i in data["got"]) {
-                this.chartData.push([i, data["got"][i]]);
-            }
-        }
     }
 }
 </script>
+
+<style>
+.v-btn {
+    text-transform: unset !important;
+}
+</style>
