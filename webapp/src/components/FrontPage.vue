@@ -1,5 +1,5 @@
 <template>
-    <v-app-bar title="Semiconductor Test Bench" color="blue-darken-1">
+    <v-app-bar title="Electronic Device Test Bench" color="blue-darken-1">
     </v-app-bar>
 
     <v-navigation-drawer color="grey-lighten-2">
@@ -43,11 +43,6 @@ export default {
         PowerSupply,
         ControlBoard,
         Oscilloscope
-    },
-    data() {
-        return {
-            chartData: []
-        }
     }
 }
 </script>

@@ -29,14 +29,14 @@ class Oscilloscope():
         self.query('DATA:WIDTH 1')
 
     def query(self, command):
-        if ' ' in command:
+        if '?' in command:
+            return {
+                "message": self.rm.query(command)
+            }
+        else:
             self.rm.write(command)
             return {
                 "message": None
-            }
-        else:
-            return {
-                "message": self.rm.query(command)
             }
 
 
@@ -46,16 +46,47 @@ class PowerSupply():
         self.rm = pyvisa.ResourceManager().open_resource(get_pyvisa_resource(self.config['serial']))
 
     def query(self, command):
-        if ' ' in command:
+        if '?' in command:
+            return {
+                "message": self.rm.query(command)
+            }
+        else:
             self.rm.write(command)
             return {
                 "message": None
             }
-        else:
+        
+class PowerSupplySmall():
+    def __init__(self):
+        self.config = get_config()['PowerSupplySmall']
+        self.rm = pyvisa.ResourceManager().open_resource(get_pyvisa_resource(self.config['serial']))
+
+    def query(self, command):
+        if '?' in command:
             return {
                 "message": self.rm.query(command)
             }
+        else:
+            self.rm.write(command)
+            return {
+                "message": None
+            }
 
+class FunctionGenerator():
+    def __init__(self):
+        self.config = get_config()['FunctionGenerator']
+        self.rm = pyvisa.ResourceManager().open_resource(get_pyvisa_resource(self.config['serial']))
+
+    def query(self, command):
+        if '?' in command:
+            return {
+                "message": self.rm.query(command)
+            }
+        else:
+            self.rm.write(command)
+            return {
+                "message": None
+            }
 
 class ControlBoard():
     def __init__(self):
@@ -85,10 +116,10 @@ class ControlBoard():
         resp['status'] = self.errors[resp['status']]
         return resp
     
-    def query(self, cmd, value=0):
+    def query(self, cmd):
         msg = {
-            'cmd': cmd,
-            'value': value
+            'cmd': cmd.split(' ')[0],
+            'value': cmd.split(' ')[1]
         }
         return self.query_raw(msg)
 

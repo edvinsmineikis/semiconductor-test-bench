@@ -5,6 +5,7 @@
                 <v-col>
                     <v-btn @click="this.$refs.commandSender.command = 'HORIZONTAL:SCALE '">Scale</v-btn>
                     <v-btn @click="this.$refs.commandSender.command = 'HORIZONTAL:MODE:SAMPLERATE '">Sample Rate</v-btn>
+                    <v-btn @click="this.$refs.commandSender.command = 'DATA:SOURCE CH'">Set Channel</v-btn>
                     <CommandSender :target="target" ref="commandSender"/>
                 </v-col>
             </v-row>
@@ -33,17 +34,14 @@ export default {
         CommandSender,
         GChart,
     },
-    props: {
-        chartData: {
-            type: Array,
-        }
-    },
     data() {
         return {
             target: "Oscilloscope",
+            chartData: [],
             chartOptions: {
                 legend: "none",
                 vAxis: {
+                    title: 'Voltage, V',
                     viewWindow: {
                         min: 0
                     }
@@ -53,13 +51,23 @@ export default {
     },
     methods: {
         async updateChart() {
-            let data = await this.postCommand("getCurve");
+            let url = "http://localhost:5000/measurements";
+            let response = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "content-type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        "command": "get_curve",
+                    })
+                });
+            let data = await (response).json();
             this.chartData = [];
             this.chartData.push([["X"], ["Y"]])
-            for (let i in data["value"]) {
-                this.chartData.push([i, data["value"][i]]);
+            for (let i in data["message"]) {
+                this.chartData.push([i, data["message"][i]]);
             }
-            console.log(data["value"]);
+            console.log(data);
         }
     }
 }

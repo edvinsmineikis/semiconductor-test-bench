@@ -1,17 +1,27 @@
 {
     "Oscilloscope": {
-        "serial": "B022862",
-        "converter_input_voltage_channel": 4,
-        "converter_output_voltage_channel": 3
+        "serial": "B022862"
     },
-    
     "PowerSupply": {
         "serial": "1423310002"
     },
-
+    "PowerSupplySmall": {
+        "serial": "432622"
+    },
+    "FunctionGenerator": {
+        "serial": ""
+    },
     "ControlBoard": {
         "vid": 9025,
         "pid": 67,
         "baudrate": 57600
+    },
+    "Tests": {
+        "degradation_test": {
+            "shunt_resistance": 0.113333333,
+            "input_current": 5,
+            "voltage_channel": 3,
+            "current_channel": 4
+        }
     }
 }
