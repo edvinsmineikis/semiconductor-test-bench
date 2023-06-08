@@ -19,7 +19,7 @@
     "Tests": {
         "degradation_test": {
             "shunt_resistance": 0.113333333,
-            "input_current": 5,
+            "input_current": 6,
             "voltage_channel": 3,
             "current_channel": 4
         }

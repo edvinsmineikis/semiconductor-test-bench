@@ -61,5 +61,5 @@ if __name__ == '__main__':
         'PowerSupplySmall': PowerSupplySmall()
     }
     
-    degradation_test(instruments, 60*8, 1)
+    degradation_test(instruments, 60*4, 1)
 
