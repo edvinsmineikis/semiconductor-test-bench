@@ -9,13 +9,13 @@
 #define PIN_TEMP A0
 
 /*
-T1 = 16
-V1 = 0.538902148
-T2 = 180
-V2 = 2.842521167
-y = ax + b
-a = (T2-T1)/(V2-V1) = 71.19232766
-b = -a*V1+T1 = -22.3656982971
+  T1 = 16
+  V1 = 0.538902148
+  T2 = 180
+  V2 = 2.842521167
+  y = ax + b
+  a = (T2-T1)/(V2-V1) = 71.19232766
+  b = -a*V1+T1 = -22.3656982971
 */
 #define TEMP_MUL 5.0/1024.0*71.19232766-22.3656982971
 
@@ -110,15 +110,13 @@ void loop() {
           coefI = (float)dataIn["value"];
         }
         else if (dataIn["cmd"].as<String>() == "enableHiVG") {
-          if (!digitalRead(PIN_HI_V_DS)) {
-            digitalWrite(PIN_HI_V_G, HIGH);
-          }
+          digitalWrite(PIN_HI_V_G, HIGH);
         }
         else if (dataIn["cmd"].as<String>() == "disableHiVG") {
           digitalWrite(PIN_HI_V_G, LOW);
         }
         else if (dataIn["cmd"].as<String>() == "enableHiVDS") {
-          if (!digitalRead(PIN_HI_V_G)) {
+          if (!digitalRead(PIN_GS_RELAY)) {
             digitalWrite(PIN_HI_V_DS, HIGH);
           }
         }
@@ -126,7 +124,9 @@ void loop() {
           digitalWrite(PIN_HI_V_DS, LOW);
         }
         else if (dataIn["cmd"].as<String>() == "enableGsRelay") {
-          digitalWrite(PIN_GS_RELAY, HIGH);
+          if (!digitalRead(PIN_HI_V_DS)) {
+            digitalWrite(PIN_GS_RELAY, HIGH);
+          }
         }
         else if (dataIn["cmd"].as<String>() == "disableGsRelay") {
           digitalWrite(PIN_GS_RELAY, LOW);
