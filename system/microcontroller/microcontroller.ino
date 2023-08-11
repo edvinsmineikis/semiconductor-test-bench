@@ -3,8 +3,8 @@
 #define PIN_COOLER 4
 #define PIN_HI_V_G 5
 #define PIN_HI_V_DS 6
-#define PIN_GS_RELAY 7
-#define PIN_PWM_ON 8
+#define PIN_HI_V_G_RELAY 7
+#define PIN_PWM_RELAY 8
 #define PIN_PWM 9
 #define PIN_TEMP A0
 
@@ -24,7 +24,9 @@ volatile float tempValue = 0;
 float tempTarget = 25.0;
 float coefP = 1.0;
 float coefI = 1.0;
+float coefD = 1.0;
 float I = 0;
+float D = 0;
 
 
 void setup() {
@@ -33,8 +35,8 @@ void setup() {
   pinMode(PIN_COOLER, OUTPUT);
   pinMode(PIN_HI_V_G, OUTPUT);
   pinMode(PIN_HI_V_DS, OUTPUT);
-  pinMode(PIN_GS_RELAY, OUTPUT);
-  pinMode(PIN_PWM_ON, OUTPUT);
+  pinMode(PIN_HI_V_G_RELAY, OUTPUT);
+  pinMode(PIN_PWM_RELAY, OUTPUT);
   pinMode(PIN_PWM, OUTPUT);
 
   // Set up the timer to trigger every 10ms
@@ -58,8 +60,10 @@ ISR(TIMER2_COMPA_vect) {
 void updateController() {
   float P = (tempTarget - tempValue) * coefP;
   I += (tempTarget - tempValue) * coefI;
+  D = (tempValue - D) * coefD;
+  
 
-  if (P + I > 0.0) {
+  if (P + I + D > 0.0) {
     digitalWrite(PIN_COOLER, LOW);
     digitalWrite(PIN_HEATER, HIGH);
   } else {
@@ -92,6 +96,9 @@ void loop() {
         else if (dataIn["cmd"].as<String>() == "getCoefI") {
           dataOut["coefI"] = coefI;
         }
+        else if (dataIn["cmd"].as<String>() == "getCoefD") {
+          dataOut["coefD"] = coefD;
+        }
         else if (dataIn["cmd"].as<String>() == "enableTempController") {
           tempController = true;
         }
@@ -99,6 +106,9 @@ void loop() {
           tempController = false;
           digitalWrite(PIN_HEATER, LOW);
           digitalWrite(PIN_COOLER, LOW);
+        }
+        else if (dataIn["cmd"].as<String>() == "resetTempController") {
+          I = 0;
         }
         else if (dataIn["cmd"].as<String>() == "setTempTarget") {
           tempTarget = (float)dataIn["value"];
@@ -109,36 +119,45 @@ void loop() {
         else if (dataIn["cmd"].as<String>() == "setCoefI") {
           coefI = (float)dataIn["value"];
         }
-        else if (dataIn["cmd"].as<String>() == "enableHiVG") {
+        else if (dataIn["cmd"].as<String>() == "setCoefD") {
+          coefD = (float)dataIn["value"];
+        }
+        else if (dataIn["cmd"].as<String>() == "enableHiVg") {
           digitalWrite(PIN_HI_V_G, HIGH);
         }
-        else if (dataIn["cmd"].as<String>() == "disableHiVG") {
+        else if (dataIn["cmd"].as<String>() == "disableHiVg") {
           digitalWrite(PIN_HI_V_G, LOW);
         }
-        else if (dataIn["cmd"].as<String>() == "enableHiVDS") {
-          if (!digitalRead(PIN_GS_RELAY)) {
-            digitalWrite(PIN_HI_V_DS, HIGH);
-          }
+        else if (dataIn["cmd"].as<String>() == "enableHiVds") {
+          digitalWrite(PIN_HI_V_DS, HIGH);
         }
-        else if (dataIn["cmd"].as<String>() == "disableHiVDS") {
+        else if (dataIn["cmd"].as<String>() == "disableHiVds") {
           digitalWrite(PIN_HI_V_DS, LOW);
         }
-        else if (dataIn["cmd"].as<String>() == "enableGsRelay") {
-          if (!digitalRead(PIN_HI_V_DS)) {
-            digitalWrite(PIN_GS_RELAY, HIGH);
+        else if (dataIn["cmd"].as<String>() == "enableHiVgRelay") {
+          if (!digitalRead(PIN_PWM_RELAY)) {
+            digitalWrite(PIN_HI_V_G_RELAY, HIGH);
+          }
+          else {
+            dataOut["status"] = 4;
           }
         }
-        else if (dataIn["cmd"].as<String>() == "disableGsRelay") {
-          digitalWrite(PIN_GS_RELAY, LOW);
+        else if (dataIn["cmd"].as<String>() == "disableHiVgRelay") {
+          digitalWrite(PIN_HI_V_G_RELAY, LOW);
         }
         else if (dataIn["cmd"].as<String>() == "setPwm") {
           analogWrite(PIN_PWM, dataIn["value"]);
         }
-        else if (dataIn["cmd"].as<String>() == "setPwmOn") {
-          digitalWrite(PIN_PWM_ON, HIGH);
+        else if (dataIn["cmd"].as<String>() == "setPwmRelayOn") {
+          if (!digitalRead(PIN_HI_V_G_RELAY)) {
+            digitalWrite(PIN_PWM_RELAY, HIGH);
+          }
+          else {
+            dataOut["status"] = 4;
+          }
         }
-        else if (dataIn["cmd"].as<String>() == "setPwmOff") {
-          digitalWrite(PIN_PWM_ON, LOW);
+        else if (dataIn["cmd"].as<String>() == "setPwmRelayOff") {
+          digitalWrite(PIN_PWM_RELAY, LOW);
         }
         else {
           dataOut["status"] = 3;

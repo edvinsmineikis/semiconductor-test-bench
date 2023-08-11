@@ -94,7 +94,8 @@ class ControlBoard():
             0: 'OK',
             1: 'Deserialization error',
             2: 'No command key',
-            3: 'Invalid command'
+            3: 'Invalid command',
+            4: 'Relay conflict'
         }
         self.config = get_config()['ControlBoard']
         ports = serial.tools.list_ports.comports()
