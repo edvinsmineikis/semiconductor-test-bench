@@ -1,6 +1,10 @@
 {
     "Oscilloscope": {
-        "serial": "B022862"
+        "serial": "B022862",
+        "u_ds_ch": 1,
+        "u_gate_ch": 2,
+        "u_gate_r_ch": 3,
+        "i_ch": 4
     },
     "PowerSupply": {
         "serial": "1423310002"
@@ -22,6 +26,13 @@
             "input_current": 6,
             "voltage_channel": 3,
             "current_channel": 4
+        },
+        "thermal_cycling": {
+            "voltage": 100,
+            "current": 3,
+            "cycles": 10,
+            "temp_max": 60,
+            "temp_min": 50
         }
     }
 }

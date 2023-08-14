@@ -37,7 +37,7 @@ def measurements_route():
 instruments = {}
 try:
     instruments["Oscilloscope"] = Oscilloscope()
-    instruments["PowerSupply"] = PowerSupply()
+    #instruments["PowerSupply"] = PowerSupply()
     instruments["ControlBoard"] = ControlBoard()
 except:
     pass

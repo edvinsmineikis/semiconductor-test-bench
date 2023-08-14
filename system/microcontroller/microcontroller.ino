@@ -1,5 +1,5 @@
 #include <ArduinoJson.h>
-#define PIN_HEATER 3
+#define PIN_HEATER 10
 #define PIN_COOLER 4
 #define PIN_HI_V_G 5
 #define PIN_HI_V_DS 6
@@ -22,11 +22,9 @@
 bool tempController = false;
 volatile float tempValue = 0;
 float tempTarget = 25.0;
-float coefP = 1.0;
-float coefI = 1.0;
-float coefD = 1.0;
+float coefP = 2.0;
+float coefI = 0.1;
 float I = 0;
-float D = 0;
 
 
 void setup() {
@@ -58,18 +56,28 @@ ISR(TIMER2_COMPA_vect) {
 
 
 void updateController() {
-  float P = (tempTarget - tempValue) * coefP;
-  I += (tempTarget - tempValue) * coefI;
-  D = (tempValue - D) * coefD;
-  
-
-  if (P + I + D > 0.0) {
-    digitalWrite(PIN_COOLER, LOW);
-    digitalWrite(PIN_HEATER, HIGH);
-  } else {
-    digitalWrite(PIN_COOLER, HIGH);
-    digitalWrite(PIN_HEATER, LOW);
+  float error = (tempTarget - tempValue);
+  float P = error * coefP;
+  if (error > 0) {
+    if (P + I < 255) {
+      I += error * coefI;
+    }
+    else {
+      I = 254;
+    }
   }
+  if (error < 0) {
+    if (P + I > 0) {
+      I += error * coefI;
+    }
+    else {
+      I = 1;
+    }
+  }
+
+
+  analogWrite(PIN_HEATER, constrain(P + I, 0, 255));
+  digitalWrite(PIN_COOLER, P < -1.0);
 }
 
 void loop() {
@@ -96,15 +104,18 @@ void loop() {
         else if (dataIn["cmd"].as<String>() == "getCoefI") {
           dataOut["coefI"] = coefI;
         }
-        else if (dataIn["cmd"].as<String>() == "getCoefD") {
-          dataOut["coefD"] = coefD;
+        else if (dataIn["cmd"].as<String>() == "enableFan") {
+          digitalWrite(PIN_COOLER, HIGH);
+        }
+        else if (dataIn["cmd"].as<String>() == "disableFan") {
+          digitalWrite(PIN_COOLER, LOW);
         }
         else if (dataIn["cmd"].as<String>() == "enableTempController") {
           tempController = true;
         }
         else if (dataIn["cmd"].as<String>() == "disableTempController") {
           tempController = false;
-          digitalWrite(PIN_HEATER, LOW);
+          analogWrite(PIN_HEATER, 0);
           digitalWrite(PIN_COOLER, LOW);
         }
         else if (dataIn["cmd"].as<String>() == "resetTempController") {
@@ -118,9 +129,6 @@ void loop() {
         }
         else if (dataIn["cmd"].as<String>() == "setCoefI") {
           coefI = (float)dataIn["value"];
-        }
-        else if (dataIn["cmd"].as<String>() == "setCoefD") {
-          coefD = (float)dataIn["value"];
         }
         else if (dataIn["cmd"].as<String>() == "enableHiVg") {
           digitalWrite(PIN_HI_V_G, HIGH);
@@ -148,7 +156,7 @@ void loop() {
         else if (dataIn["cmd"].as<String>() == "setPwm") {
           analogWrite(PIN_PWM, dataIn["value"]);
         }
-        else if (dataIn["cmd"].as<String>() == "setPwmRelayOn") {
+        else if (dataIn["cmd"].as<String>() == "enablePwmRelay") {
           if (!digitalRead(PIN_HI_V_G_RELAY)) {
             digitalWrite(PIN_PWM_RELAY, HIGH);
           }
@@ -156,7 +164,7 @@ void loop() {
             dataOut["status"] = 4;
           }
         }
-        else if (dataIn["cmd"].as<String>() == "setPwmRelayOff") {
+        else if (dataIn["cmd"].as<String>() == "disablePwmRelay") {
           digitalWrite(PIN_PWM_RELAY, LOW);
         }
         else {
