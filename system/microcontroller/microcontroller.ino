@@ -117,8 +117,6 @@ void loop() {
           tempController = false;
           analogWrite(PIN_HEATER, 0);
           digitalWrite(PIN_COOLER, LOW);
-        }
-        else if (dataIn["cmd"].as<String>() == "resetTempController") {
           I = 0;
         }
         else if (dataIn["cmd"].as<String>() == "setTempTarget") {

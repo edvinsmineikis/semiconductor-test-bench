@@ -31,7 +31,7 @@ class Oscilloscope():
     def query(self, command):
         if '?' in command:
             return {
-                "message": self.rm.query(command)
+                "message": self.rm.query(command).strip('\n')
             }
         else:
             self.rm.write(command)
@@ -48,7 +48,7 @@ class PowerSupply():
     def query(self, command):
         if '?' in command:
             return {
-                "message": self.rm.query(command)
+                "message": self.rm.query(command).strip('\n')
             }
         else:
             self.rm.write(command)
@@ -64,7 +64,7 @@ class PowerSupplySmall():
     def query(self, command):
         if '?' in command:
             return {
-                "message": self.rm.query(command)
+                "message": self.rm.query(command).strip('\n')
             }
         else:
             self.rm.write(command)
