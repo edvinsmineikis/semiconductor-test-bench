@@ -35,11 +35,13 @@ def thermal_cycling(instr_dict):
         u_gate = float(osc.query("MEASUREMENT:MEAS2:VALUE?")["message"])
         i_drain = float(osc.query("MEASUREMENT:MEAS4:VALUE?")["message"])
         if save is True:
-            log_append("thermal.log", [u_in, i_in, u_ds, u_gate, i_drain, temp])
+            log_append("./logs/thermal.log", [u_in, i_in, u_ds, u_gate, i_drain, temp])
         print([u_in, i_in, u_ds, i_drain, u_gate, temp])
         
         error_condition = (
             ("No error" not in ps.query("SYST:ERR?")["message"])
+            or (u_gate > 6.0 and i_drain < 0.5)
+            or (u_gate < 6.0 and i_drain > 0.5)
         )
         if error_condition is True:
             stop_everything()
@@ -54,8 +56,8 @@ def thermal_cycling(instr_dict):
 
     temp_target = test_config["temp_min"]
     cb.query("setTempTarget " + str(temp_target))
-    cb.query("enableHiVds 0")
     cb.query("setPwm 128")
+    cb.query("enableHiVds 0")
 
     u_ds_ch = str(config["Oscilloscope"]["u_ds_ch"])
     u_gate_ch = str(config["Oscilloscope"]["u_gate_ch"])
@@ -76,15 +78,13 @@ def thermal_cycling(instr_dict):
     ps.query("CURR:PROT " + str(test_config["current"]))
     ps.query("OUTP ON")
 
-    time.sleep(1)
-
+    print_delay = 0.5
     for i in range(test_config["cycles"]):
-        print(str(i) + "/" + str(test_config["cycles"]))
+        print(str(i+1) + "/" + str(test_config["cycles"]))
 
         cb.query("enablePwmRelay 0")
-        cb.query("setPwm 128")
-        ps.query("OUTP ON")
-        time.sleep(1)
+        time.sleep(0.1)
+        print_params(save=True)
 
         # osc.query("DATA:SOURCE CH" + u_ds_ch)
         # values_u_ds = measurements.get_curve(instr_dict)["message"]
@@ -96,26 +96,16 @@ def thermal_cycling(instr_dict):
         while True:
             temp = cb.query("getTemp 0")["temp"]
             print_params()
-            time.sleep(1.0)
+            time.sleep(print_delay)
             if temp > test_config["temp_max"]:
-                cb.query("enableFan 0")
                 cb.query("disablePwmRelay 0")
-                cb.query("setPwm 0")
-                ps.query("OUTP OFF")
+                cb.query("enableTempController 0")
                 while True:
                     temp = cb.query("getTemp 0")["temp"]
                     print_params()
-                    time.sleep(1.0)
-                    if temp < test_config["temp_min"]:
-                        cb.query("enableTempController 0")
-                        break
-                while True:
-                    temp = cb.query("getTemp 0")["temp"]
-                    print_params()
-                    time.sleep(1.0)
-                    if abs(temp_target - temp) < 0.5:
+                    time.sleep(print_delay)
+                    if abs(temp_target - temp) < 0.1:
                         cb.query("disableTempController 0")
-                        print_params(save=True)
                         break
                 break
 

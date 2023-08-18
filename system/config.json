@@ -19,13 +19,13 @@
     },
     "Tests": {
         "thermal_cycling": {
-            "u_ds_scale": 2.0,
+            "u_ds_scale": 50.0,
             "u_gate_scale": 2.0,
             "i_scale": 0.5,
             "voltage": 300,
             "current": 5,
             "cycles": 100,
-            "temp_max": 80,
+            "temp_max": 100,
             "temp_min": 50
         }
     }
