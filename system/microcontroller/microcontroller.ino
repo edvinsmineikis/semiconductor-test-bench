@@ -1,8 +1,8 @@
 #include <ArduinoJson.h>
-#define PIN_HEATER 10
+#define PIN_HEATER 5
 #define PIN_COOLER 4
-#define PIN_HI_V_G 5
-#define PIN_HI_V_DS 6
+#define PIN_HI_V_G 2
+#define PIN_HI_V_DS 3
 #define PIN_HI_V_G_RELAY 7
 #define PIN_PWM_RELAY 8
 #define PIN_PWM 9
@@ -26,7 +26,6 @@ float coefP = 2.0;
 float coefI = 0.1;
 float I = 0;
 
-
 void setup() {
   Serial.begin(57600);
   pinMode(PIN_HEATER, OUTPUT);
@@ -37,13 +36,24 @@ void setup() {
   pinMode(PIN_PWM_RELAY, OUTPUT);
   pinMode(PIN_PWM, OUTPUT);
 
+  // Ultra fast PWM
+  TCCR1A = 0;
+  TCCR1B = 0;
+  TCCR1A |= (1 << WGM11);
+  TCCR1B |= (1 << WGM13) | (1 << WGM12);
+  TCCR1A |= (1 << COM1A1);
+  //ICR1 = 799; // 10kHz
+  ICR1 = 7999; // 1kHz
+  OCR1A = ICR1 / 2;
+  TCCR1B |= (1 << CS10);
+
   // Set up the timer to trigger every 10ms
   TCCR2A = 0;
   TCCR2B = 0;
   TCNT2 = 0;
-  OCR2A = 156;  // 16MHz clock, prescaler of 1024, 156 = 10ms
+  OCR2A = 156;
   TCCR2B |= (1 << WGM12);
-  TCCR2B |= (1 << CS22) | (1 << CS21) | (1 << CS20);  // prescaler of 1024
+  TCCR2B |= (1 << CS22) | (1 << CS21) | (1 << CS20);
   TIMSK2 |= (1 << OCIE2A);
 }
 
@@ -74,7 +84,6 @@ void updateController() {
       I = 1;
     }
   }
-
 
   analogWrite(PIN_HEATER, constrain(P + I, 0, 255));
   digitalWrite(PIN_COOLER, P < -1.0);
@@ -128,6 +137,11 @@ void loop() {
         else if (dataIn["cmd"].as<String>() == "setCoefI") {
           coefI = (float)dataIn["value"];
         }
+        else if (dataIn["cmd"].as<String>() == "setPwmFreq") {
+          long icr1_value = (F_CPU / (2 * 1 * (int)dataIn["value"])) - 1;
+          ICR1 = icr1_value;
+          OCR1A = ICR1 / 2;
+        }
         else if (dataIn["cmd"].as<String>() == "enableHiVg") {
           digitalWrite(PIN_HI_V_G, HIGH);
         }
@@ -150,9 +164,6 @@ void loop() {
         }
         else if (dataIn["cmd"].as<String>() == "disableHiVgRelay") {
           digitalWrite(PIN_HI_V_G_RELAY, LOW);
-        }
-        else if (dataIn["cmd"].as<String>() == "setPwm") {
-          analogWrite(PIN_PWM, dataIn["value"]);
         }
         else if (dataIn["cmd"].as<String>() == "enablePwmRelay") {
           if (!digitalRead(PIN_HI_V_G_RELAY)) {

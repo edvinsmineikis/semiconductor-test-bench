@@ -56,7 +56,6 @@ def thermal_cycling(instr_dict):
 
     temp_target = test_config["temp_min"]
     cb.query("setTempTarget " + str(temp_target))
-    cb.query("setPwm 128")
     cb.query("enableHiVds 0")
 
     u_ds_ch = str(config["Oscilloscope"]["u_ds_ch"])
